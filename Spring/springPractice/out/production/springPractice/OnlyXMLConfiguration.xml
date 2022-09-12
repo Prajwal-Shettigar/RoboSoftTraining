@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+<!--    all beans here-->
+<bean id="printString" class="com.prajwal.onlyXML.PrintsString">
+    <constructor-arg value="good morning"/>
+    <property name="setterMessage" value="good afternoon"/>
+</bean>
+
+<!--inserting list and map onto a bean-->
+
+    <bean id="basicClass" class="com.prajwal.onlyXML.BasicClass"  autowire="constructor">
+        <property name="listOfStrings">
+            <list>
+                <value>abbbbbbb</value>
+                <value>abbbbbbb</value>
+                <value>abbbbbbb</value>
+            </list>
+        </property>
+
+
+
+        <property name="mapOfValues">
+            <map>
+                <entry key="12" value="aaaaaa"/>
+                <entry key="12" value="aaaaaa"/>
+                <entry key="12" value="aaaaaa"/>
+            </map>
+        </property>
+    </bean>
+
+
+
+</beans>

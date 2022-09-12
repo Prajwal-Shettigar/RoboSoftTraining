@@ -1,0 +1,75 @@
+git init             //locally intialize a repo as git
+
+git clone repourl        //clones thaat repo onto the cd
+
+git remote show origin       // shows the url at origin
+
+git config --list         //shows the list of configurations
+
+git status           // shows the status of current repo
+
+
+git add filename        // adds the file to be committed
+
+
+git commit -m "commit message"      //commiting the added files along with a message
+
+
+git branch -m master main      //renaming the master as main
+
+git checkout -b branchname   //checks out of current branch onto the newly created branch
+
+
+git checkout branchname   / checkout of a branch into branch name
+
+
+git config global user.name "username"    //sets the username for all local git repos 
+
+git config global user.email "email"     //sets the email for all git local repos
+
+git remote add origin reoteurl            //to set the value for origin for local repo for clone its already set
+
+
+//when u clone move to the newly formed file and from there make ur commits or add files to that newly formed file and then add and commit
+
+
+git branch        //
+
+git branch -a       //prints all  branch names
+
+
+//to commit to a repo without cloning
+create a folder
+init as git repo
+add origin as url of the remote repo
+add files commit and push from origin to main
+
+
+//to remove a file
+git rm filename
+git add .
+git commit -m "mesages"
+git push origin master
+
+
+//to commit from different branch
+git checkout -b newbranchname
+git add .
+git commit
+git push origin newbranchname
+
+
+//pulling from a branch
+whatever changes are there between local branch and that branch from which u are pulling are addded
+git pull origin branchnamefromwhichuarepulling
+
+
+
+//delete a remote branch in origin
+git push origin --delete branchname
+
+
+//creating  a branch at remote
+git checkout -b branchname
+git push origin branchname
+

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--name space declarations-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+<!--    creates a happy fotune bean-->
+    <bean id="happyFortune" class="com.prajwal.dependencyInjectionDemo.HappyFortuneService">
+        <constructor-arg value="Today is your lucky day..."/>
+    </bean>
+
+<!--    creates a bean for the bean name class give the name of the bean you want to create in main here as value for setter-->
+    <bean id="beanName" class="com.prajwal.dependencyInjectionDemo.BeanName">
+        <property name="beanName" value="cricketCoach"/>
+    </bean>
+
+
+<!--    creating track coach bean-->
+    <bean id="trackCoach" class="com.prajwal.dependencyInjectionDemo.TrackCoach">
+        <constructor-arg ref="happyFortune"/>
+    </bean>
+
+
+<!--    creating the baseball coach bean-->
+    <bean id="baseballCoach" class="com.prajwal.dependencyInjectionDemo.BaseBallCoach">
+        <constructor-arg ref="happyFortune"/>
+    </bean>
+
+<!--    creating cricket coach bean with setter injection-->
+    <bean id="cricketCoach" class="com.prajwal.dependencyInjectionDemo.CricketCoach">
+        <property name="fortuneService" ref="happyFortune"/>
+    </bean>
+</beans>

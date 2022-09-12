@@ -1,0 +1,33 @@
+1.Display only those customers whose grade are higher than every customer in New York. 
+
+>>>>>>select cust_name,grade,city from customer where grade>all(select grade from customer where city='new york');
+ 
+
+2. Display all the orders issued by the salesman 'Paul Adam'. 
+
+>>>>>>select order_no,customer_id,o.salesman_id,name from orders o inner join salesman s on o.salesman_id=s.salesman_id where name='paul adam';
+
+
+
+3. Write a query to find all orders attributed to a salesman in New york. 
+
+>>>>>>select order_no,customer_id,o.salesman_id,city from orders o inner join salesman s on o.salesman_id=s.salesman_id where city='new york';
+
+4.Create following tables by applying appropriate constraints: 
+
+	Employee(Employee_ID, First_Name, Last_Name,  Hire_Date, Job_ID, Salary, Manager_ID, Department_ID) 
+	>>>>>> create table employee(employee_id int primary key,first_name varchar(20) not null,last_name varchar(20),hire_date date,job_id int,salary float(20,2),manager_id int,department_id int,foreign key(department_id) references department(dpt_code));
+
+	Job_History(Employee_ID, Start_Date, End_Date, Job_ID, Depertmrnt_ID) 
+	>>>>>>create table job_history(employee_id int,start_date date,end_date date,job_id int,department_id int,foreign key(employee_id) references employee(employee_id),foreign key(department_id) references department(dpt_code));
+
+	Department(Dpt_Code, Dpt_Name, Dpt_Allotment) 
+	>>>>>>create table department(dpt_code int primary key,dpt_name varchar(20) not null,dpt_allotment int);
+
+
+
+5.Display the full name (first and last), hire date, salary, and department number for those employees whose first name does not contain the letter M. The result set must be in ascending order by department number. 
+>>>>>>>select concat(first_name,last_name) as fullname,hire_date,salary,department_id from employee where first_name not like 'm%' order by department_id;
+
+6.Display the ID for those employees who did two or more jobs in the past.
+>>>>>>>select employee_id from job_history group by employee_id having count(distinct job_id)>=2;

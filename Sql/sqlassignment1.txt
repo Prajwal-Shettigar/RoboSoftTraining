@@ -1,0 +1,73 @@
+1.Create a table Student with fields USN, Name, Age. 
+
+Apply following constraint at the column level at time of table creation: 
+
+Primary Key on USN 
+
+NOT NULL on Age 
+
+>>>>>>create table Student( usn varchar(11) primary key,name varchar(20),age int not null);
+
+
+2.Create table Student1 selecting USN, Name  from Student. 
+
+>>>>>>create table student1 select usn,name from student;
+
+3.Create table Student2 selecting USN, Name from Student, but rename them as st_USN, st_Name in new table.
+
+>>>>>>create table student2 select usn as st_usn,name as st_name from student;
+
+4.Create table Student_new selecting all the columns from Student.
+
+>>>>>>create table student_new select * from student;
+
+5.Insert 5 records to Student table
+
+>>>>>>insert into student values('4dm18cs029','prajwal',21),('4dm18cs031','prasad',22),
+      ('4dm18cs010','ashwath',22),('4dm18cs017','kaushik',22),('4dm18cs053','sumanth',22);
+
+6.Retrieve contents of all the three tables.
+>>>>>>select * from student;
+>>>>>>select * from student1;
+>>>>>>select * from student2;
+
+7.Create table Student3 selecting USN, Name from Student 
+
+>>>>>>create table student3 select usn,name from student;
+
+8.Create table Student4 selecting USN, Name from Student but rename them as st_USN, st_Name in new table. 
+
+>>>>>>create table student4 select usn as st_usn,name as st_name from student;
+
+9.Retrieve contents of Student3 and Student4 tables.
+
+>>>>>>select * from student3;
+>>>>>>select * from student4;
+
+10.Insert all the records of Student3 to Student2. 
+
+>>>>>>insert into student2 select * from student3;
+
+11.Insert USN, Age values to the Student_new table from Student table of those students whose age is 21.
+
+>>>>>>insert into student_new(usn,age) select usn,age from student where age=21;
+
+12.Insert 3 more records to Student table interactively(Using only one INSERT INTO statement) 
+
+>>>>>>insert into student values('4dm18cs001','sushmitha',21),('4dm18cs030','pranav',22),('4dm18cs028','pooja',22);
+
+13.Retrieve all the contents of Student table 
+
+>>>>>>select * from student;
+
+14.Retrieve USN, Name of all Students from Student_new table 
+
+>>>>>> select usn,name from student_new;
+
+15.Retrieve USN and Name of all Students from Student table whose age is less than 23. 
+
+>>>>>>select usn,name from student where age<23;
+
+16.Retrieve all data of students  from Student table whose age is more than 22. 
+
+>>>>>>select * from student where age>22;

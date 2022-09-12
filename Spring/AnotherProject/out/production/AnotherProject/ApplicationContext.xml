@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd">
+
+<!--    <bean id="morning" class="com.prajwal.GreetingsMessage.Morning"/>-->
+<!--    <bean id="afternoon" class="com.prajwal.GreetingsMessage.Afternoon"/>-->
+<!--    <bean id="evening" class="com.prajwal.GreetingsMessage.Evening"/>-->
+<!--    <bean id="night" class="com.prajwal.GreetingsMessage.Night"/>-->
+
+<!--    <bean id="calculateSum" class="com.prajwal.GreetingsMessage.CalculateSum">-->
+<!--        <constructor-arg value="10" type="int"/>-->
+<!--        <constructor-arg value="20" type="int"/>-->
+<!--    </bean>-->
+
+
+
+<!--    <bean id="variables" class="com.prajwal.GreetingsMessage.Variables">-->
+<!--        <property name="a" value="1100"/>-->
+<!--        <property name="b" value="50"/>-->
+<!--    </bean>-->
+
+<!--    <bean id="calculateSum" class="com.prajwal.GreetingsMessage.CalculateSum">-->
+<!--        <constructor-arg>-->
+<!--            <ref bean="variables"/>-->
+<!--        </constructor-arg>-->
+<!--    </bean>-->
+
+<!--<bean id="calculateSum" class="com.prajwal.GreetingsMessage.CalculateSum">-->
+<!--    <property name="variables">-->
+<!--        <ref bean="variables"/>-->
+<!--    </property>-->
+<!--    <property name="variables" ref="variables"/>-->
+<!--</bean>-->
+
+
+<!--    <bean id="printlistofvalues" class="com.prajwal.GreetingsMessage.PrintListOfValues">-->
+<!--        <constructor-arg>-->
+<!--            <list>-->
+<!--                <ref bean="variables"/>-->
+<!--                <ref bean="variables"/>-->
+<!--                <ref bean="variables"/>-->
+<!--            </list>-->
+<!--        </constructor-arg>-->
+<!--    </bean>-->
+
+<!--    <bean id="variables1" class="com.prajwal.GreetingsMessage.Variables">-->
+<!--        <constructor-arg value="100"/>-->
+<!--    </bean>-->
+
+<!--    <bean id="variables" class="com.prajwal.GreetingsMessage.Variables" parent="variables1">-->
+<!--        <constructor-arg value="200"/>-->
+<!--    </bean>-->
+
+
+<!--    <bean id="printlistofvalues" class="com.prajwal.GreetingsMessage.PrintListOfValues">-->
+<!--        <constructor-arg>-->
+<!--            <map>-->
+<!--                <entry key="1" value-ref="variables"/>-->
+<!--                <entry key="2" value-ref="variables"/>-->
+<!--                <entry key="3" value-ref="variables"/>-->
+<!--            </map>-->
+<!--        </constructor-arg>-->
+<!--    </bean>-->
+
+<!--    <bean id="variables" class="com.prajwal.GreetingsMessage.Variables">-->
+<!--        <property name="a" value="100"/>-->
+<!--        <property name="b" value="2000"/>-->
+<!--    </bean>-->
+
+<!--    <bean id="calculateSum" class="com.prajwal.GreetingsMessage.CalculateSum" autowire="byName"/>-->
+
+    <bean id="variables" class="com.prajwal.GreetingsMessage.Variables">
+        <property name="a" value="100"/>
+        <property name="b" value="2000"/>
+    </bean>
+
+<!--    <bean id="value" class="java.lang.String">-->
+<!--        <constructor-arg value="prajwal"/>-->
+<!--    </bean>-->
+
+<!--    <bean id="var2" class="com.prajwal.GreetingsMessage.Variables">-->
+<!--        <property name="a" value="100"/>-->
+<!--        <property name="b" value="2000"/>-->
+<!--    </bean>-->
+
+<!--    <bean id="calculateSum" class="com.prajwal.GreetingsMessage.CalculateSum" autowire="byType">-->
+<!--    </bean>-->
+
+<!--<bean id="printListOfValues" class="com.prajwal.GreetingsMessage.PrintListOfValues">-->
+<!--    <property name="myList">-->
+<!--        <list>-->
+<!--            <ref bean="variables"/>-->
+<!--            <ref bean="variables"/>-->
+<!--            <ref bean="variables"/>-->
+<!--        </list>-->
+<!--    </property>-->
+<!--</bean>-->
+
+<!--<bean id="someClass" class="com.prajwal.GreetingsMessage.Factory" factory-method="getSomeClass"></bean>-->
+
+<!--    <bean id="factoryBean" class="com.prajwal.GreetingsMessage.Factory"/>-->
+
+<!--    <bean id="someClass" class="com.prajwal.GreetingsMessage.Factory" factory-method="giveSomeClass" factory-bean="factoryBean"/>-->
+
+<!--<bean id="beanWithScope" class="com.prajwal.GreetingsMessage.BeanWithScope" scope="prototype" init-method="init" destroy-method="destroy"/>-->
+<!--    <bean id="beanWithScope2" class="com.prajwal.GreetingsMessage.BeanWithScope" scope="prototype" init-method="init" destroy-method="destroy"/>-->
+    <context:annotation-config/>
+
+    <bean id="someBean" class="com.prajwal.GreetingsMessage.SomeClass"/>
+    <bean id="someClass" class="com.prajwal.GreetingsMessage.SomeClass"/>
+
+
+    <bean id="forAutoWiring" class="com.prajwal.GreetingsMessage.ForAutoWiring"/>
+
+
+
+</beans>

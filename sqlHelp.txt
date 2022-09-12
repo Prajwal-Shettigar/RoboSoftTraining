@@ -1,0 +1,42 @@
+//create a database
+create database databasename;
+
+
+//login on command prompt
+change cd to bin of mysql server
+mysql -u username -p
+enter your passowrd
+
+
+show tables;
+
+show databases;
+
+use databasename;
+
+//update a row value
+update tablename set columnname=value where condition
+
+
+//drop a table 
+drop table tablename;
+
+
+//delete data from table
+delete from tablename where condition;
+
+
+//change a column attribute
+alter table tablename change columnname columnname newattributes;
+
+
+//alter a table by adding a new column
+alter table tablename add newcolumndef;
+
+
+//inner join
+select columnnames from table1 inner join table2 joincondition where condition;
+
+//left join ,right join,full join same statements replace inner with respective
+
+full join doesnt requires joincondition

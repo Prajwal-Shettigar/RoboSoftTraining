@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:annotation-config/>
+
+<!--    creating beans of books in library-->
+    <bean id="book1" class="com.prajwal.librarySystem.Book">
+        <property name="bookTitle" value="A TIME TO KILL"/>
+        <property name="noOfCopies" value="3"/>
+    </bean>
+
+    <bean id="book2" class="com.prajwal.librarySystem.Book">
+        <property name="bookTitle" value="EAST OF EDEN"/>
+        <property name="noOfCopies" value="3"/>
+    </bean>
+
+    <bean id="book3" class="com.prajwal.librarySystem.Book">
+        <property name="bookTitle" value="THE SUN ALSO RISES"/>
+        <property name="noOfCopies" value="3"/>
+    </bean>
+
+
+    <!--    creating a bean of librarian-->
+    <bean id="librarian" class="com.prajwal.librarySystem.Librarian">
+        <property name="id" value="101"/>
+        <property name="name" value="librarian"/>
+        <property name="address" value="udupi"/>
+        <property name="phoneNumber" value="9876176000"/>
+        <property name="password" value="90046"/>
+    </bean>
+
+
+    <!--creating clerk bean-->
+    <bean id="clerk" class="com.prajwal.librarySystem.Clerk">
+        <property name="id" value="201"/>
+        <property name="name" value="clerk"/>
+        <property name="address" value="udupi"/>
+        <property name="phoneNumber" value="987617616"/>
+        <property name="password" value="96322"/>
+    </bean>
+
+
+<!--    creating borrower bean for library-->
+    <bean id="borrower1" class="com.prajwal.librarySystem.Borrower">
+        <property name="id" value="301"/>
+        <property name="name" value="borr1"/>
+        <property name="address" value="udupi"/>
+        <property name="phoneNumber" value="987617616"/>
+    </bean>
+
+    <bean id="borrower2" class="com.prajwal.librarySystem.Borrower">
+        <property name="id" value="302"/>
+        <property name="name" value="borr2"/>
+        <property name="address" value="udupi"/>
+        <property name="phoneNumber" value="987617616"/>
+    </bean>
+    <bean id="borrower3" class="com.prajwal.librarySystem.Borrower">
+        <property name="id" value="303"/>
+        <property name="name" value="borr3"/>
+        <property name="address" value="udupi"/>
+        <property name="phoneNumber" value="987617616"/>
+    </bean>
+
+<!--    empty borrower-->
+    <bean id="newBorrower" class="com.prajwal.librarySystem.Borrower" scope="prototype"/>
+
+<!--    empty book-->
+    <bean id="newBook" class="com.prajwal.librarySystem.Book" scope="prototype"/>
+
+<!--    library bean with some intial borrowers and books-->
+
+    <bean id="library" class="com.prajwal.librarySystem.Library">
+        <constructor-arg>
+            <list>
+                <ref bean="borrower1"></ref>
+                <ref bean="borrower2"></ref>
+                <ref bean="borrower3"></ref>
+            </list>
+        </constructor-arg>
+        <constructor-arg>
+            <list>
+                <ref bean="book1"></ref>
+                <ref bean="book2"></ref>
+                <ref bean="book3"></ref>
+            </list>
+        </constructor-arg>
+    </bean>
+
+
+
+
+</beans>

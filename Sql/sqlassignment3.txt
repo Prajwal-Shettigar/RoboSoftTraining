@@ -1,0 +1,54 @@
+Salesman(salesman_id, name, city)
+
+>>>>>>create table salesman(salesman_id int primary key,name varchar(20) not null ,city varchar(20));
+>>>>>>insert into salesman values(101,'salesman1','new york'),(102,'salesman2','LA'),(103,'salesman3','denver'),(104,'salesman4','chicago');
+
+Customer(Cust_id, cust_name, city,grade, salesman_id) 
+
+>>>>>>create table customer(cust_id int primary key,cust_name varchar(20) not null,city varchar(20),grade int,salesman_id int,foreign key(salesman_id) references salesman(salesman_id));
+
+
+Orders(Order_no, purchase_amt, order_date, customer_id, salesman_id) 
+
+>>>>>>create table orders(order_no int primary key auto_increment,purchase_amt float(20,2) not null,order_date date,customer_id int, foreign key(customer_id) references customer(cust_id),salesman_id int,foreign key(salesman_id) references salesman(salesman_id));
+
+
+
+
+
+
+1.Display those customers who are neither belongs to the city New York nor grade value is more than 100. 
+
+>>>>>>select * from customer where city<>'new york' and grade<=100;
+
+
+2.Find the highest purchase amount ordered by each customer along with their ID. 
+
+>>>>>>select customer_id,max(purchase_amt) from orders group by customer_id;
+
+
+3.Find the highest purchase amount along with customer ID and order date, for those customers who have a higher purchase amount in a day which is within the range 2000 and 6000.
+
+>>>>>>select max(purchase_amt),customer_id,order_date from orders where purchase_amt between 2000 and 6000 group by order_date;
+
+>>>>>>select max(purchase_amt),substring_index(group_concat(customer_id),',',-1) as customer_id,order_date from orders where purchase_amt between 2000 and 6000 group by order_date order by order_date;
+
+
+4.Display the highest grade for each of the cities of the customers.
+
+>>>>>>select max(grade),city from customer group by city;
+
+ 
+5.Display names of those customers and salesmen who lives in the same city. 
+
+>>>>>>select name,cust_name from customer inner join salesman on salesman.city=customer.city;
+
+
+6.Display each order number followed by the name of the customers who made the order. 
+
+>>>>>>select order_no,cust_name from orders inner join customer on customer_id=cust_id order by order_no;
+
+
+7.Display the highest purchase amount on a date '17-Aug-2015' for each salesman along with their ID. 
+
+>>>>>>>select max(purchase_amt),salesman_id from orders where order_date='2015-08-17' group by salesman_id;

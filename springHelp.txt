@@ -1,0 +1,227 @@
+
+//xml cotext file config
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd">	
+</beans>
+
+
+
+//passing values through setter
+<property name="" value=""/>
+
+//passing value through constructor
+<constructor-arg value="" type=""/>
+
+//passing object through constructor
+//create bean of that object
+<constructor-arg>
+	<ref bean="id"/>
+</constructor-arg>
+
+<constructor-arg ref="id"/>
+
+
+//passing object through setter
+<property name="">
+	<ref bean="id"/>
+</property>
+<propert name="" ref="id"/>
+
+//passing list of values
+<list>
+	<value>value1</value>
+	</value>value2</value>
+</list>
+
+//passing list of objects
+//create the bean
+<list>
+	<ref bean="id"/>
+	<ref bean="id"/>
+</list>
+
+
+
+//passing a map of key value pairs
+<map>
+	<entry key = "" value= ""/>
+	<entry key = "" value= ""/>
+</map>
+
+//passing a map of object key value pairs
+<map>
+	<entry key-ref="id" value-ref="id"/>
+	<entry key-ref="id" value-ref="id"/>
+</map>
+
+
+//auto wiring
+	auto injection of objects not primary data types
+//byName
+	requires setters
+	here the variable name and the id of the bean which is being injected into other bean must be same
+	class A{
+		Var var;
+	}
+
+	class Var{
+		//something
+	}
+	
+	<bean id="var" class=""/>		//id of the class is same as that of id of variable in class A
+	<bean id="someid" class="" autowire="byName"/>
+
+//byType
+	requires setters
+	have a bean which has the same type as that of variable multiple objects of same type causes exception
+	class A{
+		Var var;
+	}
+
+	class Var{
+		//something
+	}
+
+	<bean id="varrr" class=""/>
+	<bean id="someid" class="" autowire="byType"/>   //type of the variable must be same as that of type of bean
+
+//constructor
+	here values are set into arguments of constructor with highest numbwer of args it can match
+	if there are 2 constructors with (Obj1,Obj2),(Obj1,Obj2,Obj3) it will match second if it has beans for all obj1,2&3 but if it is (Obj1,int2,int3),(Obj1,Obj2) it will choose that one whose max args it can match
+	values are set based on type of argument
+	class A{
+		Var var;
+		A(Var var){
+			this.var=var;
+			}
+		}
+	
+	class Var{
+		//something
+	}
+	<bean  id="varrr" class=""/>
+	<bean id="" class="" autowire="constructor"/>
+
+//factory bean
+creating a bean from static method of another class
+<bean id="" class="otherclassname" factory-method="staticmethodname"/>
+
+creating a bean from no static method of another class
+<bean id="" class="otherclassname" factory-method="nonstaticmethodthatreturnsobject" factory-bean="otherclassbean"/>
+
+creating a bean from same class static method   useful for singleton classes
+<bean id="" class="classname" factory-method="methodname"/>
+
+//spring bean scopes
+singleton
+the container creates single object of the bean and for each request provides the same object
+same object for multiple getBean for a particular bean
+
+prototype
+the container provides new bean object for each request
+different objects for multiple get bean for some particular bean
+
+//web aware scopes
+request
+session
+application
+websocket
+
+//bean life cycle
+container intantiated
+bean will be created 
+init method will be called
+tasks are performed which are written by the user
+destroy method is called
+container will be closed
+
+//init method will be called for every bean intialization for prototype bean and destroy is not called
+//in terms of singleton classes init method is called for every bean if every bean has it and destroy is also called for every bean if they have it
+
+// for prototype beans the destroy is not called
+
+//because for singleton beans the spring container handles the complete life cycle but for prototype beans spring container doesnt handles the entire lifecycle
+//it just creates prototype bean and leaves the handling to user
+
+//association and composition
+
+@Service             //to mark a class as service provide and then u can access it using the context you use this to annotate a class as a bean
+
+@configuration    //anotate a class as a bean container
+
+@Bean    //annotate a method as a creater of bean  no nead to annotate the class
+
+
+<context:annotation-config/>    // declare in xml file if u are using annotatins
+
+@Autowired annotation
+
+//@Autowired on setter uses byType autowiring and if multiple beans of same type present then it tries to match name of method variable with id of any bean
+
+//@Autowired can be used on an variable and still it uses byType autowiring
+
+//@Autowired is not need on constructor (autowiring takes place without the annotation)
+
+//if multiple beans found then it will try to autowire byName if name of variables also doesnt match then it gives an error
+
+
+<context:component-scan base-package="com.luv2code.springdemo" />   //mention in xml file to tell where to look for beans if added no need of <context:annotation-config/>   
+
+@Component("name for bean") //can be used for creating beans
+
+
+@Qualifier("idofbean") // to add a bean of particular id when multiple beans are present of same type and u want to add bean of id different of variable name
+
+//creating beans using @Bean
+inside configure class  (class can also be not annotated with configuration and it  will now create prototypbeans rather than singleton beans which it was creating while using configuration annotation)
+create methods which will return objects and annotate them with @Bean
+here the name of the bean will be same as name of the method
+
+//creating beans
+there are 3 ways to create an bean
+everything is compatible with 5.3.9
+//xml
+	create beans in xml file usibng bean tag
+	classpathapplicationcontext
+	
+//xml and java
+	annotate classes as component add  <context:component-scan base-package="com.luv2code.springdemo" /> to xml
+	classpathapplicationcontext
+	compatible with 5.0.1
+//java
+	create a class with configuration annotation
+	create methods which will return objects and annotate them with bean
+	annotationconfigapplicationcontext
+	compatible with 5.2.0
+
+
+
+
+
+
+
+
+
+
+association ->one aboject uses another object
+	class Employee{
+		Office office;
+		public Employee(Office office){
+			this.office = office;
+		}
+	}
+
+composition ->one object owns another
+
+	class Employee{
+		Office office;
+		public Employee(){
+			office = new Office();
+		}
+	}

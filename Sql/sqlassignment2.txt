@@ -1,0 +1,34 @@
+1.Update Age of all students as 20 in Student_new table
+
+>>>>>>update student_new set age=20;
+
+2.Update Age as 21 and name as 'ABC' of student whose USN is  4XY22CS025 in Student table 
+
+>>>>>> update student set age=21,name='abc' where usn='4XY22CS025';
+
+3.Delete all the records of Student3 table. 
+
+>>>>>>delete from student3;
+
+4.Delete records of employees whose age is 23 from Student_new table. 
+>>>>>>delete from student_new where age=23;
+
+5.Add three columns Marks1, Marks2 and Marks3 to the Student table.
+
+>>>>>>alter table student add column mark1 int,add column mark2 int,add column mark3 int;
+
+6.Add Total column to the Student table with column specification as number(2)
+
+>>>>>>alter table student add column total int after usn;
+
+7.Change the column specification of Total to number(3).
+
+>>>>>>alter table student change column total total int after name;
+
+8.Drop column Marks3 from Student table 
+
+>>>>>>alter table student drop column mark3;
+
+9.Drop the table Student4
+
+>>>>>>drop table student4;

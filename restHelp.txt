@@ -1,0 +1,96 @@
+transfer of state of an resource
+
+client server constraint
+	client and servers are completely seperated where a machine can be either a client or a server not both
+
+statelessness
+	server cannot store state of client everything it needs is in the request client can maintain state
+cache 
+	whether response should be chached or not must be indicated in the response by the server
+uniform user interface
+	all devices must communicate with server in same way
+layered
+	architecture is layered
+code on demand
+	server can send exceuteable optional code
+
+api is how different devices communicate its a defintion  of how these devices must communicate
+
+web api is how diffenrent applications communicate one application can user services provided by other applications
+
+web server processes requests from the client and prepares a response
+
+web is connection of networks
+
+network is connection of computers
+
+level -0 a single uri and uses post for evrything
+level -1 uri for each resource but uses post for everything
+level -2 uri for each resource and uses multiple methods based on request such as get,post etc
+level -3 uri for each resource and multiple methods of request and huses hateos
+
+hateos embeds links in responses that points to additional resources that might be useful in better understanding the response
+
+use verbs instead of nouns and specify the operation using the http methods
+
+get-for getting the resource post - for adding the reource put -for updating delete - for deleting  patch-to update a part of resource
+
+controllers
+	classes that will contain methods and based on the type of request a particular method of the controller will be invoked
+
+
+
+
+dependencies 
+<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+    <version>2.7.3</version>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-test</artifactId>
+    <version>2.7.3</version>
+    <scope>test</scope>
+</dependency>
+
+</dependencies>
+
+
+
+demo app
+package com.prajwal.demo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class DemoApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(DemoApplication.class, args);
+	}
+
+}
+
+
+
+@RequestBody
+	to get parameters from body of the request
+
+@GetMapping
+@PostMapping
+@DeleteMapping
+
+
+while posting the name of the variable in pojo class and the key of the value in jason must be same
+
+
+@PathVariable to attach a path variable to a handler argument
+
+@RestController
+	annotate the controller class with this annotation
