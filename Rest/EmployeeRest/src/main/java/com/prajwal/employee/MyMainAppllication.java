@@ -1,18 +1,12 @@
-package com.prajwal.SpringProject1;
+package com.prajwal.employee;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MainApplication {
+public class MyMainAppllication {
 
     public static void main(String[] args) {
-
-        //runing my main application on tomcat server using spring
-        SpringApplication.run(MainApplication.class,args);
-
-
-
-
+        SpringApplication.run(MyMainAppllication.class,args);
     }
 }

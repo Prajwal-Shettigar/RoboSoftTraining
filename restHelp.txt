@@ -94,3 +94,10 @@ while posting the name of the variable in pojo class and the key of the value in
 
 @RestController
 	annotate the controller class with this annotation
+
+
+returning html from action of a controller
+	return new ModelAndView("viewnamewithoutextension");
+
+
+try to put springbootapplication annotated class not in the default package put it in your created package as it might cause error putting in default package

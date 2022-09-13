@@ -5,6 +5,7 @@ import com.prajwal.SpringProject1.Model.Book;
 import com.prajwal.SpringProject1.Service.BookOperations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -44,5 +45,11 @@ public class MyController {
     @DeleteMapping("/Books/{id}")
     public void deleteBook(@PathVariable int id){
         bookOperations.removeBook(id);
+    }
+
+
+    @RequestMapping("/html")
+    public ModelAndView getHtml(){
+        return new ModelAndView("index");
     }
 }
