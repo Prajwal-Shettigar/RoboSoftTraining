@@ -34,13 +34,13 @@ public class EmployeeController {
     }
 
     //add employee
-    @PostMapping("/ADD")
+    @PostMapping("/Employees")
     public String addEmployee(@RequestBody Employee employee){
         return returnSuccesfulOrNot(employeeServices.addEmployee(employee));
     }
 
     //update employee based on id
-    @PutMapping("Employees/{id}")
+    @PutMapping("/Employees/{id}")
     public String updateEmployee(@PathVariable int id,@RequestBody Employee employee){
         return returnSuccesfulOrNot(employeeServices.updateEmployee(id,employee));
     }
@@ -48,10 +48,10 @@ public class EmployeeController {
 
 
 
-    //returns a string bases on whether the operation was successful or not
+    //returns a string based on whether the operation was successful or not
     public String returnSuccesfulOrNot(Boolean success){
         if(success){
-            return "Successful Operaation";
+            return "Successful Operation";
         }
 
         return "Unsuccessful Operation";

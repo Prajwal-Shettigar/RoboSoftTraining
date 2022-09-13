@@ -101,3 +101,51 @@ returning html from action of a controller
 
 
 try to put springbootapplication annotated class not in the default package put it in your created package as it might cause error putting in default package
+
+
+jdbc driver class name
+	com.mysql.cj.jdbc.Driver
+
+
+
+dependencies for spring jdbc
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>5.3.22</version>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>5.3.22</version>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>5.3.22</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.30</version>
+        </dependency>
+
+
+while using xml based config in maven project put xml file under resources
+
+
+jdbcTemplate alloows us to excute queries on the database
+
+DriverManagerDataSource takes 
+
+
+in result set the indexing begins from 1 not zero
