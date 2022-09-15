@@ -2,6 +2,7 @@ package com.prajwal.employee.Module;
 
 
 
+
 //employee pojo class
 public class Employee {
 
@@ -55,5 +56,15 @@ public class Employee {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "employeeId=" + employeeId +
+                ", employeeName='" + employeeName + '\'' +
+                ", department='" + department + '\'' +
+                ", location='" + location + '\'' +
+                '}';
     }
 }

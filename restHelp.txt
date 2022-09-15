@@ -109,34 +109,32 @@ jdbc driver class name
 
 
 dependencies for spring jdbc
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
+
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>5.3.22</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+            <version>2.7.3</version>
         </dependency>
 
 
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>5.3.22</version>
-        </dependency>
 
-
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <version>5.3.22</version>
-        </dependency>
 
         <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.30</version>
+        </dependency>
+
+
+//lambok dependency for auto getters setters and to string generation
+
+  <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.24</version>
+            <scope>provided</scope>
         </dependency>
 
 
@@ -149,3 +147,18 @@ DriverManagerDataSource takes
 
 
 in result set the indexing begins from 1 not zero
+
+
+@AutoConfigure the jdbc template give property values in application.properties file and place it in resources
+
+
+PreparedStatement is an interface create a lambda (preparedStatement)->{preparedStatement.setString(index,value);}    can do this for different data types other than string
+
+
+S4lj logging error can be solved by adding spring starter web test dependency
+
+
+for sending xml data send in the form of
+<item>
+<variable-name>valuewithoutquotes</variable-name>
+</item>

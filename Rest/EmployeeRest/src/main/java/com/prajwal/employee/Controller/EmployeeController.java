@@ -40,8 +40,9 @@ public class EmployeeController {
     }
 
     //update employee based on id
-    @PutMapping("/Employees/{id}")
+    @PatchMapping("/Employees/{id}")
     public String updateEmployee(@PathVariable int id,@RequestBody Employee employee){
+        System.out.println(employee);
         return returnSuccesfulOrNot(employeeServices.updateEmployee(id,employee));
     }
 
