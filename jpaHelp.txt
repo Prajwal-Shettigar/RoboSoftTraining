@@ -1,0 +1,47 @@
+create entity manager factory using the persistance class
+
+using entity manager factory create a entity manager
+
+then using entity manager perform database operations
+
+annotate the class as entity and also annotate the id
+
+use javax class
+
+
+dependencies needed
+	<dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.6.10.Final</version>
+        </dependency>
+	 <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.30</version>
+        </dependency>
+
+
+persistance xml file   persistence.xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+          http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd"
+             version="2.2">
+
+<persistence-unit name="default">
+    <properties>
+        <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver" />
+        <property name="javax.persistence.jdbc.url"
+                  value="jdbc:mysql://localhost:3306/forjpa" />
+        <property name="javax.persistence.jdbc.user" value="root" />
+        <property name="javax.persistence.jdbc.password"
+                  value="root" />
+
+    </properties>
+</persistence-unit>
+</persistence>
+
+
+place it under resources/META-INF folder

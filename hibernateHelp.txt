@@ -54,8 +54,37 @@ Transaction
 
 @OneToOne
 	creates a foreign key in declared table
+
+@ManyToOne
+	creates a foreign key in declared table
 @OneToMany(mappedBy="variablename")//incase extra table is created for mapping u can stop that by specifying in this the name of the variable of the entity in which the relation would be mapped
 	creates a new table on behalf of the table in which its declared
 @ManyToMany
 	creates table for each table in which it is declared
 creation of multiple tables can be avoided by using the mappedBy property
+
+
+dependencies
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>4.1.6.Final</version>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.30</version>
+        </dependency>
+
+
+cache
+	first level cache
+		for single session each session has its own first level cache
+	second level cache
+		any session can access this cache all sessions combined have single second level cache
+		for 2nd level cache u will require an external cache use ehcache and also add hibernate ehcache dependency make sure the version of the hibernate and ehcache are matching
+		
+		in the class or entity which has to be cached annotate with @cacheable  and @cache(usage=Cachingstrategy)

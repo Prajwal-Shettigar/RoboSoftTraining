@@ -162,3 +162,10 @@ for sending xml data send in the form of
 <item>
 <variable-name>valuewithoutquotes</variable-name>
 </item>
+
+
+
+ResponseEntity
+	to send http respons or the data
+	ResponseEntity.status(HttpStatus.statusConstant).build()        //to create a response entity object with status
+	ResoponseEntity.of(Optional.of(data))				//to return some datav with 200 status code
