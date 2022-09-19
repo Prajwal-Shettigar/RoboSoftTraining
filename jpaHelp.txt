@@ -45,3 +45,78 @@ persistance xml file   persistence.xml
 
 
 place it under resources/META-INF folder
+
+create a db and also a table in database
+
+
+dependencies for jpa
+<dependencies>
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <version>2.7.2</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>2.7.3</version>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.30</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.24</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+use mysql5dialect
+
+
+application.properties file
+spring.datasource.url=jdbc:mysql://localhost:3306/forjpa
+spring.datasource.username=root
+spring.datasource.password=root
+spring.jpa.database-platform = org.hibernate.dialect.MySQL5Dialect
+spring.jpa.generate-ddl=true
+spring.jpa.hibernate.ddl-auto = update
+
+
+
+
+@Query can be used for mentioning ur own queries for methods in jpaRepository
+
+@Modifying can beb used for creating sql stateemnts which modify the table such as delete has to be used in combination with @Query and also annotate with @Transactional
+@Transactional
+@Modying
+@Query(value="mention query here",nativeQuery=true)
+
+
+    @Transactional
+    @Modifying
+    @Query(value = "delete from employee e where e.city=?1",nativeQuery = true)
+    void deleteByCity(String city);
+
+
+
+@NamedNativeQuery(name = "Employee.findByNameandCity",query ="select * from employee  where name=?1 and city=?2",resultClass = Employee.class)
+useful for mentioning queries along with the entity and can create a method with the same name in jparepositiory which can be directly called
