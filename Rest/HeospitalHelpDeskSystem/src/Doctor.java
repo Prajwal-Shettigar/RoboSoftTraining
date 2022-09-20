@@ -64,6 +64,10 @@ public class Doctor {
                 System.out.println("No patients to check..");
                 return;
             }
+
+            Patient patient = patients.remove(patients.size()-1);
+            System.out.println(patient);
+
             System.out.println("Checking patient...");
 
             try{
@@ -71,12 +75,14 @@ public class Doctor {
             }catch (Exception e){
                 System.out.println(e.getLocalizedMessage());
             }
+
+
+            System.out.println("Checkup complete...");
+
             System.out.println("Enter the disease that patient had : ");
             String disease = stringScanner.nextLine();
 
-            System.out.println("Checkup complete...");
-            Patient patient = patients.remove(patients.size()-1);
-            System.out.println(patient);
+
 
             patient.makePayment(doctorsFee,new MedicalRecord(LocalDate.now(),disease,"checkup",0,0,this.doctorId,this.name,this.doctorsFee));
 
