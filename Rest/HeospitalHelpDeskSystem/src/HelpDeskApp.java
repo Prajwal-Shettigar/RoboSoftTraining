@@ -266,7 +266,10 @@ public class HelpDeskApp {
             break;
         }
         double amount = payAfterInsurance(room,noOfDays);
-        patient.makePayment(amount,new MedicalRecord(LocalDate.now(),"","checkup",0,0,room.getDoctors().getDoctorId(),room.getDoctors().getName(),amount));
+
+        System.out.println("Enter the reason for which u want to get admitted : ");
+        String reason = stringScanner.nextLine();
+        patient.makePayment(amount,new MedicalRecord(LocalDate.now(),reason,"admit",noOfDays, room.getRoomId(), room.getDoctors().getDoctorId(),room.getDoctors().getName(),amount));
 
         room.setOccupied(true);
         room.setPatient(patient);
