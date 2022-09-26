@@ -1,0 +1,61 @@
+admin table
+CREATE TABLE `admin` (
+  `id` int NOT NULL,
+  `password` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`)
+)
+
+movie table
+CREATE TABLE `movie` (
+  `name` varchar(20) NOT NULL,
+  `description` varchar(20) DEFAULT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  `duration` int NOT NULL,
+  PRIMARY KEY (`id`)
+)
+
+theatre table
+ CREATE TABLE `theatre` (
+  `name` varchar(20) NOT NULL,
+  `location` varchar(20) NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
+)
+
+user table
+CREATE TABLE `user` (
+  `fname` varchar(20) NOT NULL,
+  `lname` varchar(20) DEFAULT NULL,
+  `phonenumber` int DEFAULT NULL,
+  `location` varchar(20) NOT NULL,
+  `email` varchar(30) DEFAULT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `phonenumber` (`phonenumber`)
+)
+
+shows table
+CREATE TABLE `shows` (
+  `timings` timestamp NOT NULL,
+  `seats` int DEFAULT '100',
+  `screen_no` int NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  `theatre_id` int NOT NULL,
+  `movie_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `theatre_id` (`theatre_id`),
+  KEY `movie_id` (`movie_id`),
+  CONSTRAINT `shows_ibfk_1` FOREIGN KEY (`theatre_id`) REFERENCES `theatre` (`id`),
+  CONSTRAINT `shows_ibfk_2` FOREIGN KEY (`movie_id`) REFERENCES `movie` (`id`)
+)
+
+history table
+CREATE TABLE `history` (
+  `user_id` int NOT NULL,
+  `show_id` int NOT NULL,
+  `seats_booked` int NOT NULL,
+  KEY `user_id` (`user_id`),
+  KEY `show_id` (`show_id`),
+  CONSTRAINT `history_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  CONSTRAINT `history_ibfk_2` FOREIGN KEY (`show_id`) REFERENCES `shows` (`id`)
+)
