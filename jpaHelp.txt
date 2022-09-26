@@ -120,3 +120,18 @@ spring.jpa.hibernate.ddl-auto = update
 
 @NamedNativeQuery(name = "Employee.findByNameandCity",query ="select * from employee  where name=?1 and city=?2",resultClass = Employee.class)
 useful for mentioning queries along with the entity and can create a method with the same name in jparepositiory which can be directly called
+
+
+@OneToOne
+can be both unidirectinal and bidirectional 
+in unidirectional u create the foreign key which references the primary key of the other table
+in bidirectional u apply the relation ship in both tables
+u can also use mapped by if u have created variables for foreign key in both classes like bidirectional
+
+
+//for data format exception
+while using bidirectional relationships use
+@JsonBackReference on the variable which will not map
+@JsonManagedReference on variable which will map
+u also need to mention the mapped by
+and @JsonIgnore on variable which is used for mapping

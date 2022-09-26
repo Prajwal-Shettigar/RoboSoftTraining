@@ -40,3 +40,6 @@ select columnnames from table1 inner join table2 joincondition where condition;
 //left join ,right join,full join same statements replace inner with respective
 
 full join doesnt requires joincondition
+
+//to show create statement for a table
+show create table tablename;
