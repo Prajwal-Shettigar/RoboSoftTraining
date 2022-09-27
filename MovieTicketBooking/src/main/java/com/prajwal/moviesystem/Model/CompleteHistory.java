@@ -20,6 +20,36 @@ public class CompleteHistory {
     private String description;
     private int duration;
 
+    private double total_cost;
+
+    private int history_id;
+
+    private boolean paid;
+
+
+    public boolean isPaid() {
+        return paid;
+    }
+
+    public void setPaid(boolean paid) {
+        this.paid = paid;
+    }
+
+    public int getHistory_id() {
+        return history_id;
+    }
+
+    public void setHistory_id(int history_id) {
+        this.history_id = history_id;
+    }
+
+    public double getTotal_cost() {
+        return total_cost;
+    }
+
+    public void setTotal_cost(double total_cost) {
+        this.total_cost = total_cost;
+    }
 
     public double getCost() {
         return cost;

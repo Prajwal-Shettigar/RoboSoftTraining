@@ -19,8 +19,9 @@ theatre table
   `name` varchar(20) NOT NULL,
   `location` varchar(20) NOT NULL,
   `id` int NOT NULL AUTO_INCREMENT,
+  `price` double not null,
   PRIMARY KEY (`id`)
-)
+);
 
 user table
 CREATE TABLE `user` (

@@ -8,10 +8,38 @@ package com.prajwal.moviesystem.Model;
  */
 public class History {
 
+    private int historyId;
     private int userId;
     private int showId;
     private int seatsBooked;
 
+    private double totalCost;
+
+    private boolean paid;
+
+    public int getHistoryId() {
+        return historyId;
+    }
+
+    public void setHistoryId(int historyId) {
+        this.historyId = historyId;
+    }
+
+    public double getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(double totalCost) {
+        this.totalCost = totalCost;
+    }
+
+    public boolean isPaid() {
+        return paid;
+    }
+
+    public void setPaid(boolean paid) {
+        this.paid = paid;
+    }
 
     public int getUserId() {
         return userId;

@@ -38,12 +38,13 @@ public class AdminService extends MainService{
 
     //add a movie
     public int addMovie(Movie movie){
-        String insertQuery = "insert into movie(name,description,duration) values(?,?,?)";
+        String insertQuery = "insert into movie(name,description,duration,rating) values(?,?,?,?)";
 
         return jdbcTemplate.update(insertQuery,(preparedStatement)->{
             preparedStatement.setString(1,movie.getName());
             preparedStatement.setString(2,movie.getDescription());
             preparedStatement.setInt(3,movie.getDuration());
+            preparedStatement.setDouble(4,0);
         });
     }
 

@@ -20,6 +20,16 @@ public class User {
     private String location;
     private String email;
 
+    private double wallet;
+
+    public double getWallet() {
+        return wallet;
+    }
+
+    public void setWallet(double wallet) {
+        this.wallet = wallet;
+    }
+
     public int getId() {
         return id;
     }

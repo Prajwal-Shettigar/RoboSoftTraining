@@ -15,6 +15,15 @@ public class Movie {
     private String description;
     private int duration;
 
+    private double rating;
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
 
     public int getId() {
         return id;
