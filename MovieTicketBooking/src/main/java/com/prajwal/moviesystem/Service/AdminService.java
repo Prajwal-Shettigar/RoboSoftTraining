@@ -21,6 +21,7 @@ public class AdminService extends MainService{
             Admin ad = new Admin();
             ad.setPassword(resultSet.getString(2));
 
+            System.out.println("inside login..");
             return ad;
         });
 

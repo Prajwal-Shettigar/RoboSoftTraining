@@ -1,0 +1,24 @@
+//shceduled tasks
+	create a subclass of TimerTask
+	create an object of Timer 
+	shcedule the timertask using the timer
+
+	class SomeClass extends TimerTask{
+
+	@Override
+	public void run(){
+		//write  some impl here
+	}
+	}
+
+	class Main
+	{
+	
+	public static void main(String[] args){
+	TimerTask timerTask  = new TimerTask();
+	Timer timer = new Timer();
+		
+	timer.schedule(task,2000,3000);
+	//will execute task at first after 2 seconds and then after every 3 seconds
+	}
+	}

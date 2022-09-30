@@ -12,15 +12,17 @@ import java.util.List;
 /*
 
 {
+    "id":1
     "name":"prajwal",
     "products":[{
         "productName":"mobile"
+        "customer_id":1
     }]
 }
 
 */
 
-@Data
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -28,11 +30,34 @@ public class Customer {
 
 
     @Id
-    @GeneratedValue
-    private int id;
+    private Integer id;
     private String name;
 
-    @OneToMany(targetEntity = Product.class,cascade = CascadeType.ALL)
-    @JoinColumn(name = "cust_id",referencedColumnName = "id")
+    @OneToMany(targetEntity = Product.class,mappedBy = "customer_id",cascade = CascadeType.ALL)
     private List<Product> products;
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
 }

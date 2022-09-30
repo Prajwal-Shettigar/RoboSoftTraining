@@ -28,7 +28,7 @@ public class UserController {
     //login a user
     //take user id and phone number as password for login and return a session key and a message indicating
     //login is successful
-    @GetMapping("/Login")
+    @PostMapping("/Login")
     public String userLogin(@RequestBody User user){
         if(userService.userLogin(user)){
             sessionId = new Random().nextInt(10000,20000);
@@ -44,7 +44,7 @@ public class UserController {
 
     //register a user
     //take all necessary details from user and return session key and user id on successful registration
-    @GetMapping("/Register")
+    @PostMapping("/Register")
     public String userRegister(@RequestBody User user){
         int id = userService.userRegistration(user);
 

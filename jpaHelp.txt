@@ -9,7 +9,7 @@ annotate the class as entity and also annotate the id
 use javax class
 
 
-dependencies needed
+dependencies needed for hibernate
 	<dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
@@ -135,3 +135,8 @@ while using bidirectional relationships use
 @JsonManagedReference on variable which will map
 u also need to mention the mapped by
 and @JsonIgnore on variable which is used for mapping
+
+to change server port in spring boot add server.port=port number
+
+
+RestTemplate can just act as a client and just accept the data from server just like postman and also send data to server

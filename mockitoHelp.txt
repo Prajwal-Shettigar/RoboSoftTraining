@@ -1,0 +1,81 @@
+in mockito test
+annotate the class with @SpringBootTest
+
+@RunningWith(Main.class)   // to run ur test class on running main
+
+
+@MockBean to declare a repo
+
+
+when(methodCall).thenReturn(value to be returned);  //returns the given value when the method call is made
+
+verify(methodCall)     //to verify whether a certain behaviour has occured once
+verify(methodCall,VerificationMode)
+
+
+Stubs       // classes which return dummyb objects
+
+
+mock(Classname.class)   //declaring u are going to mock this class similar to mockBean annotation
+
+verify(mockobject).methodCall(args);   //before this u have to make the method call and this will verify whether a method call for that method was made with the passed arguments
+
+verify(mockobject,never()).methodCall(args);  //the method call is never made with given args
+
+varify(mockobject,times(numberOfTimes)).methodCall();  //the method call is made numberOfTimes times
+
+
+mock()   //will create an mock which wont be altered
+ List list = Mockito.mock(ArrayList.class);
+
+        list.add(1);
+        list.add(2);
+
+
+        assertEquals(0,list.size());
+
+
+spy()  //will create an mock which can be altered
+ List list = Mockito.spy(ArrayList.class);
+
+        list.add(1);
+        list.add(2);
+
+
+        assertEquals(2,list.size());
+
+//get values of any type using
+Mockito.anyType(); // where type is the type of variable even collections are possible
+
+
+//throw an error on method call
+when(methodCall).thenThrow(new Exception());
+
+
+//instead of when thenReturn 
+guven(methodCall).willReturn(returnValue);
+
+ArgumentCaptor
+used to capture the arguments that is passed to a method when it is called
+
+Hamcrest Matchers
+for assert statements create matchers
+
+
+@Mock
+to declare a object as mock
+
+@RunWith
+user with @Mock to initialize all the mocks
+
+@InjectMocks
+to inject a mock
+
+@Captor
+to initialize a argument captor
+
+@Spy 
+to intialize the partial mock objects
+
+
+to test the code u have written u would require external classes which may contact the db or run on another cloud server so inorder to avoid those classes doing their original operation and to check only ur written code u aould mock those classes and mock their output as u require as those classes will be implemented by some one else ..

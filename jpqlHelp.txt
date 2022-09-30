@@ -1,0 +1,55 @@
+using dynamic parameter values
+    @Query("select e.ename from Employee e where e.eid=?1")
+    String getNameById(int id);
+
+using named parameter values
+    @Query("select e from Employee e where e.designation=:desig")
+    List<Employee> getEmployeesByDesignation(@Param("desig") String desig);
+
+
+jpqa is case sensitive
+
+
+inheritance type 
+defines how inhertiance in java entities nwwd to be mapped in db tables
+
+MappedSuperClass
+	 here a table will be created for each child and all features of superclass will be added to each table along with child entity features there is no table for super entity
+	annotate super entity with @MappedSuperClass no @Entity for super class required but for child classes @Entity is required
+
+table per class
+	here table will be created for each entity including the super entity and each child entity will contain all super entity attributes and super class table will be mapped as a relation ship with other table
+	annotate super entity with @Entity and @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS) and also child entity with @Entity
+
+single table
+	here a single table is created by combining all atributes of parent and children
+	annotate parent entity with @Entity and @Inheritance(strategy = InheritanceType.SINGLE_TABLE) and @DiscriminatorColumn(name = “Publication_Type”)
+	@DiscriminatorColumn will create a column with given name which will be used to make differencitaion btn each record type based on child
+	like to which child that record belongs to
+	annotate child with @Entity and @DiscriminatorValue("somevalue")
+	this value will be used to make differenciation btn each child
+
+joined
+ 	similar to table per class a extra table along with relation ship is created for super entity and all attributes in super are added to it and also child entities are also created but they will not contain the super attribuites
+	annotate the super with @Entity and @Inheritance(strategy = InheritanceType.JOINED) also annotate the children with @Entity
+
+
+
+select o from Classname o;
+
+select o.attributename from Classname o;
+
+from classname where condition;
+
+
+// for the table name in query use the name u have provided in @Entity if not provided use classnamen do not use the name provided in @Table attribute
+
+
+//while selecting use the alias name 
+
+
+
+
+
+
+

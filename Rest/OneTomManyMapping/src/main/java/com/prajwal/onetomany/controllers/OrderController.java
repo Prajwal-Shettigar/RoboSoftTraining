@@ -1,6 +1,8 @@
 package com.prajwal.onetomany.controllers;
 
 import com.prajwal.onetomany.entity.Customer;
+import com.prajwal.onetomany.entity.Product;
+import com.prajwal.onetomany.repository.ProductRepository;
 import com.prajwal.onetomany.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +18,9 @@ public class OrderController {
     @Autowired
     OrderService orderService;
 
+    @Autowired
+    ProductRepository productRepository;
+
 
     @PutMapping("/Customer")
     public Customer putCustomer(@RequestBody Customer customer){
@@ -25,5 +30,10 @@ public class OrderController {
     @GetMapping("/Customers")
     public List<Customer> getAllCustomers(){
         return orderService.getAllCustomers();
+    }
+
+    @PutMapping("/Product")
+    public Product addProduct(@RequestBody Product product){
+        return productRepository.save(product);
     }
 }

@@ -175,3 +175,16 @@ ResponseEntity
 	to send http respons or the data
 	ResponseEntity.status(HttpStatus.statusConstant).build()        //to create a response entity object with status
 	ResoponseEntity.of(Optional.of(data))				//to return some datav with 200 status code
+
+
+@Profile annotation
+u could have multiple application.properties files with naming convention of application-somename.properties
+
+in the main application.properties set spring.profiles.active=somename
+
+and on top of any bean specify @Profile("somename") now this bean will be only created when in application.properties the above property is set to the somename specified in @Profile
+
+
+@PostConstruct
+is normally used on a method to be auto called after all the beans are created
+

@@ -23,9 +23,9 @@ git checkout -b branchname   //checks out of current branch onto the newly creat
 git checkout branchname   / checkout of a branch into branch name
 
 
-git config global user.name "username"    //sets the username for all local git repos 
+git config --global user.name "username"    //sets the username for all local git repos 
 
-git config global user.email "email"     //sets the email for all git local repos
+git config --global user.email "email"     //sets the email for all git local repos
 
 git remote add origin reoteurl            //to set the value for origin for local repo for clone its already set
 
