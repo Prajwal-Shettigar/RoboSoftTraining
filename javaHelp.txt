@@ -22,3 +22,8 @@
 	//will execute task at first after 2 seconds and then after every 3 seconds
 	}
 	}
+
+
+//creating annotations
+public @interface annotationname{
+}

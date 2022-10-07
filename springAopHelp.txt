@@ -1,0 +1,94 @@
+aspect oriented programming
+u need to run something before some other thing say u need to run a method which provides functionality different to business logic so u can configure it as an aspect which is called before some other thing every time
+
+
+to make an class as aspect u can annotate with @Aspect tag and  its all methods will become advice and u can use @Before and other tags to adjust their execution
+
+@Before("execution(public String getName())")  //will call it before the get name method mention methods signature
+
+running an advice for method of a particular class
+@Before("execution(public String packagename.Classanme.getName())")        //will run only when method get name of only that particualr class is run
+
+@Aspect doesnt make a class a bean u have to  make it externally
+
+an advice for getter with any name and any type
+@Before("execution(public * get*())")  //calls advice for all getters with ay return type
+
+.. zero or more arguments
+* one or more arguments
+
+
+point cut
+rather than putting the same expression before multiple advices u can specify over a dummy method and use it as a point cut
+
+@Pointcut("execution(public * get*())")
+public void someMethod(){}
+
+@Before("someMethod()")
+public void someOtherMethod1(){}
+
+@Before("someMethod()")
+public void someOtherMethod2(){}
+
+execute advice for all methods in a class
+@Pointcut("within(packagename.classname)")
+
+chaining point cuts
+@Before("pointcut1() && pointcut2()")   //method will run only if both pointcut ezxpressions are met
+
+calling advice for methods that take a particular type of argument
+@Before("args(String)")
+
+get values passed to a method
+public void someMethods(String arg){}
+
+@Before(args(var))
+public void PointcutMethod(String var){
+can now use the var here to get value passed to someMethods as arg
+}
+
+
+advice is called for methods that we externally call and not for call by spring like while intialization if an advice is set on the setter and spring calls that setter for setting the value then the advice is not called
+
+
+@After 
+gets executed after the method even if there is any exception in the method
+
+@AfterReturning
+gets executed after the method only when method has completed all its tasks and returns
+
+@AfterThrowing
+gets executed after an exeption is thrown
+
+
+get returning value of a method
+@AfterReturning(pointcut="args(arg1)",returning ="returnArg")
+public void dummyMethod(Stiring arg1,String returnArg){}         //captures both the input arg passed to function and also the return value from the function
+
+get exception from a method
+@AfterThrowing(pointcut="somepointcut",throwing="ex")
+public void someMethod(ExceptionType ex){
+}    //gets the exception type and u can do something with it
+
+
+@Around("pointcut")
+public void someMethod(ProcedingJoinPoint p){
+//something ton run before the method
+p.proceed();      //method runs here  can even get return value useing obj= p.proceed()
+//something to do after the method runs
+}
+
+@EnableAspectJAutoProxy(proxyTargetClass=true)  //to enable aspectj auto proxy using annotation
+
+
+
+using annotation as point cut
+@Around("@annotation(completeannotationnamealongwithpackage)")
+somemethod
+
+
+in xml u would require aop-config ,aop-aspect ,aop-pointcut ,aop-method   method might be around,before,after and its types
+
+
+aop proxy
+its just an copy of the original class and all its methods are overidden and based on before or after it calls other methods and after the original methods in superclass(original class ) and also when u request for bean for original class it returns a proxy bean if its adviced

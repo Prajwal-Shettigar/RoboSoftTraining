@@ -140,3 +140,41 @@ to change server port in spring boot add server.port=port number
 
 
 RestTemplate can just act as a client and just accept the data from server just like postman and also send data to server
+
+
+@OneToOne here one entity of A is related to atmost one entity of b so u would require a foreign key in either A or B
+
+@OneToOne(mappedBy=)   spcify mapped by if bidirectional
+@JoinColumn()specify the name of the column which would be used as foreign key mention this over the varibale of entity which is going to have the foreign key
+
+
+@OneToMany  one column of A is related to multiple columns of B
+@ManyToOne multiple columns of A are related to one column of B
+
+if one to many from A then B needs to have the foreign key so use mapped by in A and and specify the join column tag in B
+
+@ManyToMany 
+multiple records of A are related to multiple records of B
+a new table has to be created with 2 foreign keys from both A and B
+specify the tag over variables of both entities and specify @JoinTable to specify name and other properties of table and mapped by to specify which entity is responsible to create the table
+
+
+
+
+@OneToOne
+using in both entities can create foreign key columns in both tables
+using in both entities but mentioning in one mappedBy the other can create a foreign key in only the entity in which mappedBy is not mentioned
+if used in only one table then foreign key will  be created in the mentioned table
+
+@OneToMany  && @ManyToOne
+using in just one entity creates a new table where u have the primary key of mentioned tables as foreign key and primary key of other table as primary key
+
+if @OneToMany and @ManyToOne is mentioned then @OneToMany will create a table with 2 foreign keys and @ManyToOne will add a foreign key to the used table
+
+using mappedby in @OneToMany will create a foreign key column in the other table
+
+
+@ManyToMany
+using in just one entity will create a table with 2 foreign keys
+using in both entities will create 2 similar tables with 2 foreign keys
+using mapped by in any one will create a single table with 2 foreign keys

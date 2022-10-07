@@ -193,14 +193,3 @@ if u have a larger application breaking down into different smaller applications
 
 connecting to apis
 apis just handle requests and send reponses they sort of provide an functionality that u can use through sending requests to these and handle the responses that they send 
-
-
-session tokens
-u take in user details and send him an unique id which user then uses each time when he tries to access something and the user inforamtion is saved on server side with that cookie being associated with that session token now user doesnt have to send user details each time he just needs to send the session cokie which u can even store in cokies and send automatically
-but if u have microservices that is each modular application running i their own servers and during login u create the session tokens in one server and next request is sent to another server then that server cant verify the user as it doesnt have the user details associated with that session token u could have a hared storage for session information 
-
-jwt
-jason web tokens
-so rather than saving user info and sending him a token u could take user info and using an algorithm u could perform some sort of signing and later make the user send the same jwt info to the server and this time u can verify it as it is signed by u and this jwt will contain all user info needed for operation
-
-u have a header ,payload and signature so header is just to inform the type of algorithm used and other details ,payload contains user information non sensitive ones and the signature is calculated by using header ,payload and a secret key
