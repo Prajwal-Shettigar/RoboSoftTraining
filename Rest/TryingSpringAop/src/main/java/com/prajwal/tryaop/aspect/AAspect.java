@@ -43,6 +43,12 @@ public class AAspect {
 
     }
 
+    //and
+    @After("@annotation(com.prajwal.tryaop.model.MyAnnotation) and execution(public int com.prajwal.tryaop.model.AModel.getB())")
+    public void afterUsingAnd(){
+        System.out.println("after using and for getb");
+    }
+
 
     //using point cut
     @Before("pointCutMethod()")
@@ -72,6 +78,12 @@ public class AAspect {
     @After("@annotation(com.prajwal.tryaop.model.MyAnnotation)")
     public void afterMethodWithAnnotation(){
         System.out.println("after annotation..");
+    }
+
+    //using or
+    @After("@annotation(com.prajwal.tryaop.model.MyAnnotation) or execution(public int com.prajwal.tryaop.model.AModel.getB())")
+    public void afterUsingOr(){
+        System.out.println("using the or after ");
     }
 
 

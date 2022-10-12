@@ -1,0 +1,43 @@
+authentication
+verifying the user is a registered user
+
+authorization
+verifying that the current user is the one who says (he is already registered and logged in)
+
+
+//my configuration class
+//without this password will be askes as in normal authentication as a form
+//with this username and password will be asked in window prompt
+@Configuration
+@EnableWebSecurity
+public class MyConfiguration extends WebSecurityConfigurerAdapter {
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests().anyRequest().authenticated().and().httpBasic();
+    }
+}
+
+
+//setting the authentication format
+   @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests().anyRequest().authenticated().and().httpBasic();
+    }
+
+
+
+//setting a local user
+ @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.inMemoryAuthentication().withUser("prajwal").password(this.getPasswordEncoder().encode("1234")).roles("user");
+    }
+
+//setting the password authentication
+    @Bean
+    PasswordEncoder getPasswordEncoder(){
+        return NoOpPasswordEncoder.getInstance();
+    }
+
+
+has a filter so the request at first goes to a filter from where it is sent to a authentication manager which finds which type of authentication to run based on that authentication is run and result of that is sent back to the filter

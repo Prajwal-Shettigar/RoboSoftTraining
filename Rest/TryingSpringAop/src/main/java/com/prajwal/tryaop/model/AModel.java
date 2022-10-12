@@ -45,6 +45,8 @@ public class AModel {
         return true;
     }
 
+
+    @MyAnnotation
     public String getString(String arg){
         return arg;
     }
