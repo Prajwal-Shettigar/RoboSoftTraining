@@ -28,4 +28,7 @@ public interface HelpDeskService {
     //get medical records based on patient id
     List<MedicalRecords> getMedicalRecordsById(int patientId);
 
+    //get all doctors
+
+
 }

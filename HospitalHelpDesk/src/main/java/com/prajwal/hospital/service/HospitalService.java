@@ -3,6 +3,8 @@ package com.prajwal.hospital.service;
 import com.prajwal.hospital.model.Doctor;
 import com.prajwal.hospital.model.Ward;
 
+import java.util.List;
+
 public interface HospitalService {
 
 
@@ -10,14 +12,14 @@ public interface HospitalService {
     Doctor registerADoctor(Doctor doctor);
 
 
-    //get the helpdesk
-    HelpDeskService getHelpDeskService();
-
-
-    //get doctor service
-    DoctorService getDoctorService();
-
-
     //add a ward
     Ward addAWard(Ward ward);
+
+
+    //get all doctors
+    List<Doctor> getAllDocTors();
+
+    //get all wards
+    List<Ward> getAllWards();
+
 }
