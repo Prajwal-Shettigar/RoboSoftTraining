@@ -15,11 +15,14 @@ public class HospitalServiceImpl implements HospitalService{
     JdbcTemplate jdbcTemplate;
     HelpDeskService helpDeskService;
 
+    DoctorService doctorService;
+
 
     @Autowired
     HospitalServiceImpl(JdbcTemplate jdbcTemplate){
         this.jdbcTemplate = jdbcTemplate;
         helpDeskService = new HelpDeskServiceImpl(jdbcTemplate);
+        doctorService = new DoctorServiceImpl(jdbcTemplate);
     }
 
     String query;
@@ -47,6 +50,10 @@ public class HospitalServiceImpl implements HospitalService{
         return helpDeskService;
     }
 
+    @Override
+    public DoctorService getDoctorService() {
+        return doctorService;
+    }
 
 
     //add a ward

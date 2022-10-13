@@ -14,6 +14,10 @@ public interface HospitalService {
     HelpDeskService getHelpDeskService();
 
 
+    //get doctor service
+    DoctorService getDoctorService();
+
+
     //add a ward
     Ward addAWard(Ward ward);
 }

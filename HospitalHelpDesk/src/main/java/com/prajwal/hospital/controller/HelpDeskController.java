@@ -1,10 +1,7 @@
 package com.prajwal.hospital.controller;
 
 
-import com.prajwal.hospital.model.Appointment;
-import com.prajwal.hospital.model.Doctor;
-import com.prajwal.hospital.model.Patient;
-import com.prajwal.hospital.model.User;
+import com.prajwal.hospital.model.*;
 import com.prajwal.hospital.service.HospitalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,11 +21,11 @@ public class HelpDeskController {
 
 
 
-    //registration for in patients
-    @PostMapping("/Register/In")
+    //registration for out patients
+    @PostMapping("/Register/Out")
     public ResponseEntity<Patient> registerInPatient(@RequestBody User user){
 
-        Patient patient1 = hospitalService.getHelpDeskService().registerPatient(new Patient(user.getName(),user.getAge(),user.getGender(),"in_patient",user.getTelNumber()));
+        Patient patient1 = hospitalService.getHelpDeskService().registerPatient(new Patient(user.getName(),user.getAge(),user.getGender(),"out_patient",user.getTelNumber()));
 
         if(patient1!=null){
             return ResponseEntity.ok(patient1);
@@ -37,11 +34,11 @@ public class HelpDeskController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
-    //registration for out patients
-    @PostMapping("/Register/Out/{noOfDays}")
-    public ResponseEntity<Patient> registerOutPatient(@RequestBody User user, @PathVariable int noOfDays){
+    //registration for in patients
+    @PostMapping("/Register/In/{noOfDays}")
+    public ResponseEntity<Patient> registerInPatient(@RequestBody User user, @PathVariable int noOfDays){
 
-        Patient patient1 = hospitalService.getHelpDeskService().registerPatient(new Patient(user.getName(),user.getAge(),user.getGender(),"out_patient",user.getTelNumber(),user.getInsuranceId(),noOfDays));
+        Patient patient1 = hospitalService.getHelpDeskService().registerPatient(new Patient(user.getName(),user.getAge(),user.getGender(),"in_patient",user.getTelNumber(),user.getInsuranceId(),noOfDays));
 
         if(patient1!=null){
             return ResponseEntity.ok(patient1);
@@ -73,6 +70,40 @@ public class HelpDeskController {
         }
 
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+    }
+
+    //get available wards
+    @GetMapping("/Wards")
+    public ResponseEntity<List<Ward>> getAvailableWards(){
+        List<Ward> wards = hospitalService.getHelpDeskService().getAvailableWards();
+
+        if(wards.size()>0){
+            return ResponseEntity.ok(wards);
+        }
+
+        return ResponseEntity.noContent().build();
+    }
+
+    //admit a patient
+    @PostMapping("/Admit/{wardId}/{patientId}")
+    public ResponseEntity<Admission> admitAPatient(@PathVariable int wardId,@PathVariable int patientId){
+        Admission admission = hospitalService.getHelpDeskService().admitAPatient(wardId,patientId);
+
+        if(admission!=null)
+            return ResponseEntity.ok(admission);
+
+        return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).build();
+    }
+
+    //get medical records by id
+    @GetMapping("/Records/{patientId}")
+    public ResponseEntity<List<MedicalRecords>> getMedicalRecordById(@PathVariable int patientId){
+        List<MedicalRecords> medicalRecords = hospitalService.getHelpDeskService().getMedicalRecordsById(patientId);
+
+        if(medicalRecords.size()>0)
+            return ResponseEntity.ok(medicalRecords);
+
+        return ResponseEntity.noContent().build();
     }
 
 

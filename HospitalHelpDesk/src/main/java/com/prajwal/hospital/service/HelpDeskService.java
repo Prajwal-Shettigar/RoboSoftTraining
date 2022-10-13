@@ -1,8 +1,6 @@
 package com.prajwal.hospital.service;
 
-import com.prajwal.hospital.model.Appointment;
-import com.prajwal.hospital.model.Doctor;
-import com.prajwal.hospital.model.Patient;
+import com.prajwal.hospital.model.*;
 
 import java.util.List;
 
@@ -21,5 +19,13 @@ public interface HelpDeskService {
     Appointment bookAnAppointment(int docId, int patientId);
 
     //admit a patient
+    Admission admitAPatient(int wardId,int patientId);
+
+
+    //get available wards
+    List<Ward> getAvailableWards();
+
+    //get medical records based on patient id
+    List<MedicalRecords> getMedicalRecordsById(int patientId);
 
 }
