@@ -27,3 +27,9 @@
 //creating annotations
 public @interface annotationname{
 }
+
+
+//prototype design
+u create a clone of an object so that u can assign its data to another object rather than fetching the same data multiple times from the database
+
+implement cloneable and override its method for shallow cloning dont add anything to the function for deep cloning do it urself.

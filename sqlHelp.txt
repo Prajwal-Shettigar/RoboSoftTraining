@@ -43,3 +43,11 @@ full join doesnt requires joincondition
 
 //to show create statement for a table
 show create table tablename;
+
+
+//creating indexes for faster access of data
+create index index_name on tablename(columns..);   
+
+//show query execution details
+explain query;
+explain select * from tablesname;   
