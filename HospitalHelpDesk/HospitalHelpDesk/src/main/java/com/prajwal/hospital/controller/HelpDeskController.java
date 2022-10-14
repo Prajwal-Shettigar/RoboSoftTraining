@@ -2,7 +2,6 @@ package com.prajwal.hospital.controller;
 
 
 import com.prajwal.hospital.model.*;
-import com.prajwal.hospital.service.DoctorService;
 import com.prajwal.hospital.service.HelpDeskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
