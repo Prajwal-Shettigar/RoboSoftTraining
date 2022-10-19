@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/Hospital")
+@RequestMapping("/Hospital/Admin")
 public class HospitalController {
 
     @Autowired

@@ -2,7 +2,15 @@ authentication
 verifying the user is a registered user
 
 authorization
-verifying that the current user is the one who says (he is already registered and logged in)
+verifying that the current user is the one who says (he is already registered and logged in) and the permission to use certain kind of features
+
+principal
+currently logged in user
+
+role
+type of user to whom u grant certain type of access to ceratin type of features
+
+
 
 
 //my configuration class
@@ -38,6 +46,34 @@ public class MyConfiguration extends WebSecurityConfigurerAdapter {
     PasswordEncoder getPasswordEncoder(){
         return NoOpPasswordEncoder.getInstance();
     }
+
+
+//setting the username and pasword in application.propereties
+spring.security.user.name=prajwal
+spring.security.user.password=prajwal
+
+
+setting form login
+.and().formLogin()
+other wise uses prompt login by default
+
+setting basic auth
+.and().httpBasic()
+otherwise cant login on postman
+
+
+
+using normal jdbc requires
+spring.sql.init.mode=always to be set on first run then remove it
+
+using jpa
+create entity and repo
+rather than jdbcauthentication use
+auth.userDetailsService(userDetailsService);
+create extension of userdetails service and implement UserDetails class and pass it the user that u get from the database
+
+so a filter creates an authenticate object then it is passed to authentication manager whch finds the correct type of authentication provider and calls its authenticate method by passing the authentication object which using the user details service verifies whether the user details are correct or not and then if its correct then authenticate method returns an principal object if authentication fails authentication provider throws an exception
+so on successful authentication the profile object is saved as thread local variable and also a filter associates it with a user session 
 
 
 has a filter so the request at first goes to a filter from where it is sent to a authentication manager which finds which type of authentication to run based on that authentication is run and result of that is sent back to the filter

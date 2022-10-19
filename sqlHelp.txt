@@ -50,4 +50,8 @@ create index index_name on tablename(columns..);
 
 //show query execution details
 explain query;
-explain select * from tablesname;   
+explain select * from tablesname;
+
+
+//show all indexes from a table
+ show indexes from tablename;   
