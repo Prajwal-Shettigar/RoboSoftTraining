@@ -23,7 +23,7 @@ create table tweets(
     tweet_time timestamp default current_timestamp,
     likes_count decimal(10,0) default 0 not null,
     file_type varchar(20),
-    file
+    file_name varchar(20),
     foreign key(user_id) references user(user_id)
 );
 
