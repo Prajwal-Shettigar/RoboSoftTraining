@@ -29,6 +29,9 @@ public class FileServiceImpl implements FileService{
 
         String fileType   = file.getContentType();
 
+        System.out.println(fileName);
+        System.out.println(fileType);
+
         return fileRepository.save(new FileAttachment(fileName,fileType,file.getBytes()));
     }
 

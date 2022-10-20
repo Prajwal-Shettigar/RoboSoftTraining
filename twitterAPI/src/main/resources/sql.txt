@@ -1,7 +1,7 @@
 
 
-//users table
-create table users(
+//user table
+create table user(
     name varchar(30) not null,
     user_id varchar(30) primary key,
     password varchar(30) not null,
@@ -9,8 +9,9 @@ create table users(
     email varchar(20) unique not null,
     phone_number decimal(10,0) unique not null,
     profile_photo longblob,
-    following_count decimal(20,0) default 0,
-    followers_count decimal(20) default 0
+    following_count decimal(20,0) default 0 not null,
+    followers_count decimal(20) default 0 not null,
+    about varchar(1000)
 );
 
 //tweet table
@@ -19,10 +20,11 @@ create table tweets(
     user_id varchar(30) not null,
     content varchar(1000) not null,
     media longblob,
-    filetype varchar(20),
     tweet_time timestamp default current_timestamp,
-    likes_count decimal(10,0) default 0,
-    foreign key(user_id) references users(user_id)
+    likes_count decimal(10,0) default 0 not null,
+    file_type varchar(20),
+    file
+    foreign key(user_id) references user(user_id)
 );
 
 
@@ -48,8 +50,8 @@ create table followers(
     user_id varchar(30),
     follower_id varchar(30),
     primary key(user_id,follower_id),
-    foreign key(user_id) references users(user_id),
-    foreign key(follower_id) references users(user_id)
+    foreign key(user_id) references user(user_id),
+    foreign key(follower_id) references user(user_id)
 );
 
 //following table
@@ -57,8 +59,8 @@ create table following(
     user_id varchar(30),
     following_id varchar(30),
     primary key(user_id,following_id),
-    foreign key(user_id) references users(user_id),
-    foreign key(following_id) references users(user_id)
+    foreign key(user_id) references user(user_id),
+    foreign key(following_id) references user(user_id)
 );
 
 //likes table
@@ -66,7 +68,7 @@ create table likes(
     user_id varchar(30),
     tweet_id bigint,
     primary key(user_id,tweet_id),
-    foreign key(user_id) references users(user_id),
+    foreign key(user_id) references user(user_id),
     foreign key(tweet_id) references tweets(tweet_id)
 );
 

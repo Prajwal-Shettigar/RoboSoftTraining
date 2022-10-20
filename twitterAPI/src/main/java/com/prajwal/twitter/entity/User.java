@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 
 @Entity(name="Users")
 @Table(name = "Users")
-public class Users {
+public class User {
     private String name;
     @Id
     private String userId;
@@ -36,11 +36,13 @@ public class Users {
 
     private BigDecimal followingCount;
 
+    private String about;
 
-    public Users() {
+
+    public User() {
     }
 
-    public Users(String name, String userId, String password, boolean verified, String email, BigDecimal phoneNumber) {
+    public User(String name, String userId, String password, boolean verified, String email, BigDecimal phoneNumber) {
         this.name = name;
         this.userId = userId;
         this.password = password;
@@ -119,5 +121,13 @@ public class Users {
 
     public void setFollowingCount(BigDecimal followingCount) {
         this.followingCount = followingCount;
+    }
+
+    public String getAbout() {
+        return about;
+    }
+
+    public void setAbout(String about) {
+        this.about = about;
     }
 }
