@@ -13,8 +13,8 @@ public class Tweet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private BigInteger tweetId;
 
-    @ManyToOne(targetEntity = User.class,cascade = CascadeType.ALL)
-    @JoinColumn(name="user_id",referencedColumnName = "userId")
+//    @ManyToOne(targetEntity = User.class,cascade = CascadeType.ALL)
+//    @JoinColumn(name="user_id",referencedColumnName = "userId")
     private String userId;
 
     private String content;

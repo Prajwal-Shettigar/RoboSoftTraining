@@ -4,8 +4,9 @@ package com.prajwal.twitter.controller;
 import com.prajwal.twitter.entity.Tweet;
 import com.prajwal.twitter.entity.User;
 import com.prajwal.twitter.model.RegistrationModel;
+import com.prajwal.twitter.model.TweetModel;
+import com.prajwal.twitter.model.TweetProfile;
 import com.prajwal.twitter.model.UserProfile;
-import com.prajwal.twitter.repository.UserRepository;
 import com.prajwal.twitter.service.TwitterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -19,7 +20,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -100,7 +100,7 @@ public class TwitterController {
             List<UserProfile> userProfiles = new ArrayList<>();
 
             for(User user:topUsers){
-                String profileURL = ServletUriComponentsBuilder.fromCurrentContextPath().path("/Twitter/Profile/").path(user.getUserId()).toUriString();
+                String profileURL = twitterService.profileURLBuilder(user.getUserId());
 
                 userProfiles.add(new UserProfile(user.getName(),user.getUserId(),user.isVerified(),profileURL,user.getFollowingCount(),user.getFollowersCount(),user.getAbout()));
             }
@@ -114,9 +114,30 @@ public class TwitterController {
     //home
 
     //post a tweet
+    @PostMapping("{sid}/Tweet")
+    public ResponseEntity<HttpStatus> makeATweet(@PathVariable int sid,@ModelAttribute TweetModel tweetModel) throws IOException{
 
+        //if verified user then
+        if(checkSessionId(sid)){
+            if(twitterService.postATweet(tweetModel,userId)!=null)
+                return ResponseEntity.ok().build();
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+    }
 
     //get comment on a tweet
+    @GetMapping("/Comments/{tweetId}/{limit}")
+    public ResponseEntity<List<TweetProfile>> getCommentsOnATweet(@PathVariable BigInteger tweetId,@PathVariable int limit){
+        List<TweetProfile> comments = twitterService.getCommentsByTweetId(tweetId,limit);
+
+        if(comments!=null)
+            return ResponseEntity.ok(comments);
+
+        return ResponseEntity.noContent().build();
+    }
+
+
 
     //follow
 
@@ -125,16 +146,51 @@ public class TwitterController {
     //like a post
 
     //post a comment on a tweet
+    @PostMapping("{sid}/Comment")
+    public ResponseEntity<HttpStatus> addAComment(@PathVariable int sid, @ModelAttribute TweetModel commentModel) throws IOException{
+        if(checkSessionId(sid)){
+            if(twitterService.makAComment(commentModel,userId)!=null){
+                return ResponseEntity.ok().build();
+            }
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+    }
 
     //get followers
 
     //find users by username
 
+
     //find tweets by tag
+    @GetMapping("/Tweets/{tag}/{limit}")
+    public ResponseEntity<TweetProfile> getTweetsByTag(@PathVariable String tag,@PathVariable int limit){
+        List<TweetProfile> tweets = twitterService.getTweetsByTag(tag,limit);
+
+        if(tweets!=null)
+            return ResponseEntity.ok(tweets);
+
+        return ResponseEntity.noContent().build();
+    }
 
     //update the about
 
-    //get your own tweets
+    //update the profile pic
+
+
+
+    //get your own tweets and comments
+    @GetMapping("/{sid}/Tweets/{limit}")
+    public ResponseEntity<List<TweetProfile>> getMyTweets(@PathVariable int sid,@PathVariable int limit){
+        if(checkSessionId(sid)){
+            List<TweetProfile> tweets = twitterService.getTweetsByUserId(userId,limit);
+
+            if(tweets!=null)
+                return ResponseEntity.ok(tweets);
+        }
+
+        return ResponseEntity.noContent().build();
+    }
 
     //get profile image  by id if not found return default image
     @GetMapping("/Profile/{userId}")
@@ -153,14 +209,14 @@ public class TwitterController {
 
 
 
-    //get the tweet post  based on the tweet id
+    //get the tweet post media  based on the tweet id
     @GetMapping("/Post/{tweetId}")
     public ResponseEntity<Resource> getPostMediaById(@PathVariable BigInteger tweetId){
         Tweet tweet = twitterService.getTweetById(tweetId);
 
         if(tweet!=null){
             if(tweet.getMedia()!=null){
-                return ResponseEntity.ok().contentType(MediaType.parseMediaType(tweet.getFileType())).header(HttpHeaders.CONTENT_DISPOSITION,"filename=\"" + tweetId+tweet.getFilename() + "\"").body(new ByteArrayResource(tweet.getMedia()));
+                return ResponseEntity.ok().contentType(MediaType.parseMediaType(tweet.getFileType())).header(HttpHeaders.CONTENT_DISPOSITION,"filename=\"" + tweetId+tweet.getFileName() + "\"").body(new ByteArrayResource(tweet.getMedia()));
             }
         }
 
@@ -176,7 +232,7 @@ public class TwitterController {
         //if user exists
         if(user !=null){
             //create a url; for profile pic
-            String profileURL = ServletUriComponentsBuilder.fromCurrentContextPath().path("/Twitter/Profile/").path(id).toUriString();
+            String profileURL = twitterService.profileURLBuilder(user.getUserId());
 
             //create a user profile
             UserProfile userProfile = new UserProfile(user.getName(),user.getUserId(),user.isVerified(),profileURL,user.getFollowingCount(),user.getFollowersCount(),user.getAbout());
@@ -198,6 +254,7 @@ public class TwitterController {
     private boolean checkSessionId(int sessionId){
         return sessionId == this.sessionId;
     }
+
 
 
 }
