@@ -9,7 +9,7 @@ public class UserProfile {
 
     private String email;
 
-    private String phoneNumber;
+    private BigDecimal phoneNumber;
     private String profileURL;
     private BigDecimal followingCount;
     private BigDecimal followersCount;
@@ -62,11 +62,11 @@ public class UserProfile {
         this.email = email;
     }
 
-    public String getPhoneNumber() {
+    public BigDecimal getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
+    public void setPhoneNumber(BigDecimal phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 

@@ -10,4 +10,6 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User,String> {
 
     List<User> findAllByOrderByFollowersCountDesc(Pageable pageable);
+
+    List<User> findByName(String name);
 }

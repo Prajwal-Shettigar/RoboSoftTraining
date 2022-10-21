@@ -2,8 +2,10 @@ package com.prajwal.twitter.service;
 
 import com.prajwal.twitter.entity.Tweet;
 import com.prajwal.twitter.entity.User;
+import com.prajwal.twitter.model.Follower;
 import com.prajwal.twitter.model.TweetModel;
 import com.prajwal.twitter.model.TweetProfile;
+import com.prajwal.twitter.model.UserProfile;
 import com.prajwal.twitter.repository.TweetRepository;
 import com.prajwal.twitter.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +56,7 @@ public class TwitterServiceImpl implements TwitterService {
     public boolean loginAUser(User user) {
 
         //get user from database by id
-        User returnedUser = this.getUserById(user.getUserId());
+        User returnedUser = userRepository.findById(user.getUserId()).orElse(null);
 
 
         //if user exists and password matches then return true otherwise return false
@@ -68,8 +70,24 @@ public class TwitterServiceImpl implements TwitterService {
 
     //get a user based on id
     @Override
-    public User getUserById(String userId) {
-        return userRepository.findById(userId).orElse(null);
+    public UserProfile getUserById(String userId,boolean self) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user != null) {
+            //create a url; for profile pic
+            String profileURL = this.profileURLBuilder(user.getUserId());
+
+            //create a user profile
+            UserProfile userProfile = new UserProfile(user.getName(), user.getUserId(), user.isVerified(), profileURL, user.getFollowingCount(), user.getFollowersCount(), user.getAbout());
+
+            if(self){
+                userProfile.setEmail(user.getEmail());
+                userProfile.setPhoneNumber(user.getPhoneNumber());
+            }
+
+            return userProfile;
+        }
+
+        return null;
     }
 
 
@@ -152,6 +170,96 @@ public class TwitterServiceImpl implements TwitterService {
         this.changeLikesCountOnPost(tweetId,-1);
 
         return true;
+    }
+
+    @Override
+    public List<UserProfile> getMyFollowers(String userId,int limit) {
+
+        //get id of the user who follows u and also your id if he follows u back
+        query = "select f.follower_id,b.follower_id from followers f left join followers b on f.user_id=b.follower_id and f.follower_id=b.user_id where f.user_id='"+userId+"' limit "+limit;
+
+        List<Follower> followers = jdbcTemplate.query(query,(resultSet,noOfRows)->{
+            Follower follower = new Follower();
+
+            follower.setFollowerId(resultSet.getString(1));
+            follower.setUserId(resultSet.getString(2));
+
+            return follower;
+        });
+
+        if(followers.size()>0){
+            List<UserProfile> userProfiles = new ArrayList<>();
+
+            for(Follower follower:followers){
+                UserProfile userProfile = getOtherUserProfileUsingId(follower.getFollowerId());
+
+                userProfile.setFollowing(false);
+
+                //if you are following back set following to true
+                if(follower.getUserId()!=null)
+                    userProfile.setFollowing(true);
+
+
+                userProfiles.add(userProfile);
+            }
+
+            return userProfiles;
+
+        }
+
+        return null;
+
+    }
+
+
+    //check if u follow an account
+    @Override
+    public boolean checkIfFollowingAnAccount(String userId,String accId){
+        query = "select user_id from followers where user_id='"+accId+"' and follower_id='"+userId+"'";
+
+        String returnedId = jdbcTemplate.queryForObject(query,String.class);
+
+        if(returnedId!=null)
+            return true;
+
+        return false;
+    }
+
+    @Override
+    public List<UserProfile> getUsersByName(String name) {
+
+        List<User> userIds = userRepository.findByName(name);
+
+        if(userIds!=null){
+            List<UserProfile> userProfiles = new ArrayList<>();
+
+            for(User user:userIds){
+                userProfiles.add(this.getUserById(user.getUserId(),false));
+            }
+
+            return userProfiles;
+        }
+
+        return null;
+    }
+
+    //get user profile using id for other user
+    public UserProfile getOtherUserProfileUsingId(String userId){
+        query = "select name,user_id,verified from users where user_id='"+userId+"'";
+
+        return jdbcTemplate.query(query,(resultSet)->{
+            if(!resultSet.next())
+                return null;
+            UserProfile userProfile = new UserProfile();
+
+            userProfile.setUserName(resultSet.getString(1));
+            userProfile.setUserId(resultSet.getString(2));
+            userProfile.setVerified(resultSet.getBoolean(3));
+            userProfile.setProfileURL(this.profileURLBuilder(userId));
+
+            return userProfile;
+
+        });
     }
 
     @Override

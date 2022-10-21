@@ -4,6 +4,7 @@ import com.prajwal.twitter.entity.Tweet;
 import com.prajwal.twitter.entity.User;
 import com.prajwal.twitter.model.TweetModel;
 import com.prajwal.twitter.model.TweetProfile;
+import com.prajwal.twitter.model.UserProfile;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -15,7 +16,7 @@ public interface TwitterService {
 
     boolean loginAUser(User user);
 
-    User getUserById(String userId);
+    UserProfile getUserById(String userId,boolean self);
 
     Tweet getTweetById(BigInteger tweetId);
 
@@ -46,6 +47,12 @@ public interface TwitterService {
     boolean likeAPost(String userId,BigInteger tweetId);
 
     boolean unLikeAPost(String userId,BigInteger tweetId);
+
+    List<UserProfile> getMyFollowers(String userId,int limit);
+
+    boolean checkIfFollowingAnAccount(String userId,String accId);
+
+    List<UserProfile> getUsersByName(String name);
 
 
 }

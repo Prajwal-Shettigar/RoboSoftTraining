@@ -45,8 +45,8 @@ create table tags(
     foreign key(tweet_id) references tweets(tweet_id)
 );
 
-//followers table
-create table followers(
+//follower table
+create table follower(
     user_id varchar(30),
     follower_id varchar(30),
     primary key(user_id,follower_id),

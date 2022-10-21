@@ -41,7 +41,7 @@ public class TwitterController {
 
 
         //if user by that username doesnt exists then
-        if(twitterService.getUserById(model.getUserId())==null){
+        if(twitterService.getUserById(model.getUserId(),false)==null){
 
 
             //create a user
@@ -209,9 +209,29 @@ public class TwitterController {
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
     }
 
-    //get followers
+    //get my followers
+    @GetMapping("/{sid}/Followers/{limit}")
+    public ResponseEntity<List<UserProfile>> getFollowers(@PathVariable int sid,@PathVariable int limit){
+        if(checkSessionId(sid)){
+            List<UserProfile> myFollowers = twitterService.getMyFollowers(userId,limit);
+            if(myFollowers!=null)
+                return ResponseEntity.ok(myFollowers);
+        }
+
+        return ResponseEntity.noContent().build();
+    }
 
     //find users by username
+    @GetMapping("/Profiles/{name}")
+    public ResponseEntity<List<UserProfile>> getUsersByName(@PathVariable String name){
+        List<UserProfile> userProfiles = twitterService.getUsersByName(name);
+
+        if(userProfiles!=null)
+            return ResponseEntity.ok(userProfiles);
+
+
+        return ResponseEntity.noContent().build();
+    }
 
 
     //find tweets by tag
@@ -258,6 +278,16 @@ public class TwitterController {
         return ResponseEntity.ok().contentType(MediaType.parseMediaType("image/png")).header(HttpHeaders.CONTENT_DISPOSITION,"filename=\"" + userId+".png" + "\"").body(new ByteArrayResource(profilePic));
     }
 
+    //view self profile
+    @GetMapping("{sid}/Me")
+    public ResponseEntity<UserProfile> getMyProfile(@PathVariable int sid){
+        if(checkSessionId(sid)){
+            return ResponseEntity.ok(twitterService.getUserById(userId,true));
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
 
 
 
@@ -275,25 +305,16 @@ public class TwitterController {
         return ResponseEntity.noContent().build();
     }
 
-    //find user profile by user id by a registered user
+    //find user profile by user id
+    @GetMapping("{sid}/User/{accId}")
+    public ResponseEntity<UserProfile> getUserById(@PathVariable int sid,@PathVariable String accId){
+        if(checkSessionId(sid)) {
+            UserProfile userProfile = twitterService.getUserById(accId,false);
+            if (userProfile != null) {
 
-    //find user profile by user id for no registered user
-    @GetMapping("/User/{id}")
-    public ResponseEntity<UserProfile> getUserById(@PathVariable String id){
-        //get the user from service by id
-        User user = twitterService.getUserById(id);
-
-        //if user exists
-        if(user !=null){
-            //create a url; for profile pic
-            String profileURL = twitterService.profileURLBuilder(user.getUserId());
-
-            //create a user profile
-            UserProfile userProfile = new UserProfile(user.getName(),user.getUserId(),user.isVerified(),profileURL,user.getFollowingCount(),user.getFollowersCount(),user.getAbout());
-
-            return ResponseEntity.ok(userProfile);
+                return ResponseEntity.ok(userProfile);
+            }
         }
-
 
         return ResponseEntity.noContent().build();
     }
