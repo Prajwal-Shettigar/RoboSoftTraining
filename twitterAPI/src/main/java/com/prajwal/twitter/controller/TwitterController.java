@@ -16,10 +16,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,11 +45,11 @@ public class TwitterController {
 
 
             //create a user
-            User user = new User(model.getName(),model.getUserId(), model.getPassword(), false,model.getEmail(),model.getPhoneNumber());
+            User user = new User(model.getName(),model.getUserId(), model.getPassword(), false,model.getEmail(),model.getPhoneNumber(), BigDecimal.valueOf(0),BigDecimal.valueOf(0));
 
 
             //check if profile photo is sent
-            if(!model.getFile().isEmpty()){
+            if(model.getFile()!=null){
                 user.setProfilePhoto(model.getFile().getBytes());
             }
 
@@ -174,7 +174,7 @@ public class TwitterController {
         return HttpStatus.EXPECTATION_FAILED;
     }
 
-    //like a post
+    //like a post or comment
     @PostMapping("/{sid}/Like/{tweetId}")
     public HttpStatus likeAPost(@PathVariable int sid,@PathVariable BigInteger tweetId){
         if(checkSessionId(sid)){
@@ -186,7 +186,7 @@ public class TwitterController {
     }
 
 
-    //remove like on a  post
+    //remove like on a  post or comment
     @PostMapping("/{sid}/UnLike/{tweetId}")
     public HttpStatus unLikeAPost(@PathVariable int sid,@PathVariable BigInteger tweetId){
         if(checkSessionId(sid)){
@@ -209,6 +209,7 @@ public class TwitterController {
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
     }
 
+
     //get my followers
     @GetMapping("/{sid}/Followers/{limit}")
     public ResponseEntity<List<UserProfile>> getFollowers(@PathVariable int sid,@PathVariable int limit){
@@ -216,6 +217,21 @@ public class TwitterController {
             List<UserProfile> myFollowers = twitterService.getMyFollowers(userId,limit);
             if(myFollowers!=null)
                 return ResponseEntity.ok(myFollowers);
+        }
+
+        return ResponseEntity.noContent().build();
+    }
+
+
+    //get following
+    @GetMapping("/{sid}/Following/{limit}")
+    public ResponseEntity<List<UserProfile>> getFollowing(@PathVariable int sid,@PathVariable int limit){
+        if(checkSessionId(sid)){
+            List<UserProfile> followingProfiles = twitterService.getFollowingAccounts(userId,limit);
+
+            if(followingProfiles!=null){
+                return ResponseEntity.ok(followingProfiles);
+            }
         }
 
         return ResponseEntity.noContent().build();
@@ -245,9 +261,40 @@ public class TwitterController {
         return ResponseEntity.noContent().build();
     }
 
-    //update the about
 
-    //update the profile pic
+    //update my profile
+    @PatchMapping("/{sid}/Profile")
+    public HttpStatus updateProfile(@ModelAttribute RegistrationModel model) throws IOException{
+        if(twitterService.updateProfile(userId,model))
+            return HttpStatus.OK;
+
+        return HttpStatus.EXPECTATION_FAILED;
+    }
+
+
+    //update the tweet or comment
+    @PatchMapping("{sid}/Tweet")
+    public HttpStatus updateTweet(@PathVariable int sid,@ModelAttribute TweetModel tweetModel) throws IOException{
+        if(checkSessionId(sid)){
+            if(twitterService.updateTweet(userId,tweetModel))
+                return HttpStatus.OK;
+        }
+
+        return HttpStatus.UNAUTHORIZED;
+    }
+
+
+
+    //get universal top tweets
+    @GetMapping("/Tweets/{limit}")
+    public ResponseEntity<List<TweetProfile>> getTopTweets(@PathVariable int limit){
+        List<TweetProfile> tweets = twitterService.getTopGlobalTweets(limit);
+
+        if(tweets!=null)
+            return ResponseEntity.ok(tweets);
+
+        return ResponseEntity.noContent().build();
+    }
 
 
 
@@ -279,7 +326,7 @@ public class TwitterController {
     }
 
     //view self profile
-    @GetMapping("{sid}/Me")
+    @GetMapping("{sid}/Profile")
     public ResponseEntity<UserProfile> getMyProfile(@PathVariable int sid){
         if(checkSessionId(sid)){
             return ResponseEntity.ok(twitterService.getUserById(userId,true));

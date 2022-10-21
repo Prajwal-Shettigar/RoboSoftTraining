@@ -13,6 +13,8 @@ public class RegistrationModel {
     private String email;
     private BigDecimal phoneNumber;
 
+    private String about;
+
     public MultipartFile getFile() {
         return file;
     }
@@ -61,16 +63,11 @@ public class RegistrationModel {
         this.phoneNumber = phoneNumber;
     }
 
+    public String getAbout() {
+        return about;
+    }
 
-    @Override
-    public String toString() {
-        return "RegistrationModel{" +
-                "file=" + file +
-                ", name='" + name + '\'' +
-                ", userId='" + userId + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                ", phoneNumber=" + phoneNumber +
-                '}';
+    public void setAbout(String about) {
+        this.about = about;
     }
 }

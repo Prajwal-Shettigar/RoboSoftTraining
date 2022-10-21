@@ -42,13 +42,15 @@ public class User {
     public User() {
     }
 
-    public User(String name, String userId, String password, boolean verified, String email, BigDecimal phoneNumber) {
+    public User(String name, String userId, String password, boolean verified, String email, BigDecimal phoneNumber, BigDecimal followersCount, BigDecimal followingCount) {
         this.name = name;
         this.userId = userId;
         this.password = password;
         this.verified = verified;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.followersCount = followersCount;
+        this.followingCount = followingCount;
     }
 
     public String getName() {

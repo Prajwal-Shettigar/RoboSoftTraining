@@ -46,21 +46,12 @@ create table tags(
 );
 
 //follower table
-create table follower(
+create table followers(
     user_id varchar(30),
     follower_id varchar(30),
     primary key(user_id,follower_id),
     foreign key(user_id) references user(user_id),
     foreign key(follower_id) references user(user_id)
-);
-
-//following table
-create table following(
-    user_id varchar(30),
-    following_id varchar(30),
-    primary key(user_id,following_id),
-    foreign key(user_id) references user(user_id),
-    foreign key(following_id) references user(user_id)
 );
 
 //likes table

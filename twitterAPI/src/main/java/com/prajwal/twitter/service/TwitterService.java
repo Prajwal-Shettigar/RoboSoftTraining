@@ -2,6 +2,7 @@ package com.prajwal.twitter.service;
 
 import com.prajwal.twitter.entity.Tweet;
 import com.prajwal.twitter.entity.User;
+import com.prajwal.twitter.model.RegistrationModel;
 import com.prajwal.twitter.model.TweetModel;
 import com.prajwal.twitter.model.TweetProfile;
 import com.prajwal.twitter.model.UserProfile;
@@ -54,5 +55,12 @@ public interface TwitterService {
 
     List<UserProfile> getUsersByName(String name);
 
+    List<UserProfile> getFollowingAccounts(String userId,int limit);
+
+    List<TweetProfile> getTopGlobalTweets(int limit);
+
+    boolean updateProfile(String userId, RegistrationModel model) throws IOException;
+
+    boolean updateTweet(String userId,TweetModel tweetModel) throws IOException;
 
 }

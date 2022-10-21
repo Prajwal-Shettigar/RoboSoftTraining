@@ -2,10 +2,7 @@ package com.prajwal.twitter.service;
 
 import com.prajwal.twitter.entity.Tweet;
 import com.prajwal.twitter.entity.User;
-import com.prajwal.twitter.model.Follower;
-import com.prajwal.twitter.model.TweetModel;
-import com.prajwal.twitter.model.TweetProfile;
-import com.prajwal.twitter.model.UserProfile;
+import com.prajwal.twitter.model.*;
 import com.prajwal.twitter.repository.TweetRepository;
 import com.prajwal.twitter.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,6 +127,15 @@ public class TwitterServiceImpl implements TwitterService {
     }
 
 
+    @Override
+    public List<TweetProfile> getTopGlobalTweets(int limit) {
+        query = "select tweet_id from tweets where tweet_id not in (select comment_id from comments)order by tweet_time desc,likes_count desc limit "+limit;
+
+        List<BigInteger> tweetIds = jdbcTemplate.queryForList(query, BigInteger.class);
+
+        return getTweetsByTweetIds(tweetIds);
+    }
+
     //get tweets by people i follow
     @Override
     public List<TweetProfile> getTweetsOfFollowing(String userId, int limit) {
@@ -226,6 +232,30 @@ public class TwitterServiceImpl implements TwitterService {
     }
 
     @Override
+    public List<UserProfile> getFollowingAccounts(String userId, int limit) {
+
+        //get the user id of users i follow
+        query = "select user_id from followers where follower_id='"+userId+"' limit "+limit;
+
+        List<String> followingIds = jdbcTemplate.queryForList(query,String.class);
+
+        if(followingIds!=null){
+
+            List<UserProfile> followingUsers = new ArrayList<>();
+            for(String fId:followingIds){
+                UserProfile userProfile = this.getOtherUserProfileUsingId(fId);
+                userProfile.setFollowing(true);
+                followingUsers.add(userProfile);
+            }
+
+            return followingUsers;
+        }
+
+        return null;
+
+    }
+
+    @Override
     public List<UserProfile> getUsersByName(String name) {
 
         List<User> userIds = userRepository.findByName(name);
@@ -319,7 +349,7 @@ public class TwitterServiceImpl implements TwitterService {
 
     @Override
     public List<TweetProfile> getTweetsByTag(String tag, int limit) {
-        query = "select tweet_id from tags where tag='"+tag+"' order by tweet_id desc limit "+limit;
+        query = "select tweet_id from tags where tag='"+tag+"' and tweet_id not in (select comment_id from comments) order by tweet_id desc limit "+limit;
         List<BigInteger> tweetIds = jdbcTemplate.queryForList(query, BigInteger.class);
 
         return this.getTweetsByTweetIds(tweetIds);
@@ -333,6 +363,38 @@ public class TwitterServiceImpl implements TwitterService {
         List<BigInteger> tweetsByUser = jdbcTemplate.queryForList(query, BigInteger.class);
 
         return this.getTweetsByTweetIds(tweetsByUser);
+
+    }
+
+    @Override
+    public boolean updateProfile(String userId, RegistrationModel model) throws IOException{
+        User user  = userRepository.findById(userId).orElse(null);
+
+        if(model.getName()!=null)
+            user.setName(model.getName());
+
+        if(model.getPassword()!=null)
+            user.setPassword(model.getPassword());
+
+        if(model.getEmail()!=null)
+            user.setEmail(model.getEmail());
+
+        if(model.getPhoneNumber()!=null)
+            user.setPhoneNumber(model.getPhoneNumber());
+
+        if(model.getFile()!=null)
+            user.setProfilePhoto(model.getFile().getBytes());
+
+        if(model.getAbout()!=null)
+            user.setAbout(model.getAbout());
+
+        try{
+            userRepository.save(user);
+        }catch(Exception exception){
+            return false;
+        }
+
+        return true;
 
     }
 
@@ -385,6 +447,48 @@ public class TwitterServiceImpl implements TwitterService {
 
     }
 
+
+    @Override
+    public boolean updateTweet(String userId, TweetModel tweetModel) throws IOException {
+        Tweet tweet = tweetRepository.findById(tweetModel.getTweetId()).orElse(null);
+
+        if(tweet!=null){
+
+            if(!(tweet.getUserId().equalsIgnoreCase(userId)))
+                return false;
+
+            if(tweetModel.getContent()!=null)
+                tweet.setContent(tweetModel.getContent());
+
+            if(tweetModel.getFile()!=null){
+                tweet.setFileType(tweetModel.getFile().getContentType());
+                tweet.setFileName(tweetModel.getFile().getOriginalFilename());
+                tweet.setMedia(tweetModel.getFile().getBytes());
+
+            }
+
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime localDateTime = LocalDateTime.now();
+
+            tweet.setTweetTime(Timestamp.valueOf(dtf.format(localDateTime)));
+
+            query = "delete from tags where tweet_id="+tweet.getTweetId();
+
+            jdbcTemplate.update(query);
+
+            tweetRepository.save(tweet);
+
+            if(tweetModel.getTags()!=null){
+                for (String tag : tweetModel.getTags().split(",")) {
+                    query = "insert into tags values('" + tag.toUpperCase() + "'," + tweet.getTweetId() + ")";
+
+                    jdbcTemplate.update(query);
+                }
+            }
+        }
+
+        return true;
+    }
 
     public Tweet addTweetContents(TweetModel tweetModel, String userId) throws IOException {
         Tweet tweet = new Tweet();
