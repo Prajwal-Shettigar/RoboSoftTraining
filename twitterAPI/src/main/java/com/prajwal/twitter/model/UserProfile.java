@@ -6,10 +6,16 @@ public class UserProfile {
     private String userName;
     private String userId;
     private boolean verified;
+
+    private String email;
+
+    private String phoneNumber;
     private String profileURL;
     private BigDecimal followingCount;
     private BigDecimal followersCount;
     private String about;
+
+    private boolean following;
 
     public UserProfile() {
     }
@@ -48,6 +54,22 @@ public class UserProfile {
         this.verified = verified;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     public String getProfileURL() {
         return profileURL;
     }
@@ -78,5 +100,13 @@ public class UserProfile {
 
     public void setAbout(String about) {
         this.about = about;
+    }
+
+    public boolean isFollowing() {
+        return following;
+    }
+
+    public void setFollowing(boolean following) {
+        this.following = following;
     }
 }

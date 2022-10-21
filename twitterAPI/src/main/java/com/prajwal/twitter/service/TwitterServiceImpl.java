@@ -111,6 +111,104 @@ public class TwitterServiceImpl implements TwitterService {
 
     }
 
+
+    //get tweets by people i follow
+    @Override
+    public List<TweetProfile> getTweetsOfFollowing(String userId, int limit) {
+
+        //get the tweet id of the tweets that were recently made by people i follow
+        query = "select tweet_id from tweets t inner join followers f on t.user_id=f.user_id where follower_id='" + userId + "' and tweet_id not in (select comment_id from comments) order by tweet_time desc limit " + limit;
+        List<BigInteger> tweetIds = jdbcTemplate.queryForList(query, BigInteger.class);
+
+        return this.getTweetsByTweetIds(tweetIds);
+    }
+
+    @Override
+    public boolean FollowAUser(String userId, String accId) {
+
+        //add into followers table
+        query = "insert into followers values('"+accId+"','"+userId+"')";
+
+        try{
+            jdbcTemplate.update(query);
+        }catch (Exception exception){
+            return false;
+        }
+
+        this.updateFollowersCount(accId,1);
+
+        this.updateFollowingCount(userId,1);
+
+        return true;
+    }
+
+    @Override
+    public boolean unLikeAPost(String userId, BigInteger tweetId) {
+        query = "delete from likes where user_id='"+userId+"' and tweet_id="+tweetId;
+
+        if(jdbcTemplate.update(query)<1)
+            return false;
+
+        this.changeLikesCountOnPost(tweetId,-1);
+
+        return true;
+    }
+
+    @Override
+    public boolean likeAPost(String userId, BigInteger tweetId) {
+
+        //insert into likes table
+        query = "insert into likes values('"+userId+"',"+tweetId+")";
+
+        try{
+            jdbcTemplate.update(query);
+        }catch(Exception exception){
+            return false;
+        }
+
+        this.changeLikesCountOnPost(tweetId,1);
+
+        return true;
+    }
+
+
+    //change likes count
+    public void changeLikesCountOnPost(BigInteger tweetId,int count){
+
+        //get the likes on that tweet
+        Tweet tweet= tweetRepository.findById(tweetId).orElse(null);
+
+        BigDecimal likesCount = tweet.getLikesCount();
+
+        //update the likes on that tweet
+        query = "update tweets set likes_count="+(likesCount.add(BigDecimal.valueOf(count)))+" where tweet_id="+tweetId;
+        jdbcTemplate.update(query);
+
+
+    }
+
+    //update the number of followers
+    public void updateFollowersCount(String userId,int count){
+        //get the number of followers of that user
+        User user = userRepository.findById(userId).orElse(null);
+        BigDecimal followerCount = user.getFollowersCount();
+
+        //increase the number of followers of that user by one
+        query = "update users set followers_count="+followerCount.add(BigDecimal.valueOf(count))+" where user_id='"+userId+"'";
+        jdbcTemplate.update(query);
+    }
+
+    //update the number of following
+    public void updateFollowingCount(String userId,int count){
+        //get the number of people i follow
+        User user  = userRepository.findById(userId).orElse(null);
+        BigDecimal followingCount = user.getFollowingCount();
+
+        //increase the number of people i follow by one
+        query = "update users set following_count="+followingCount.add(BigDecimal.valueOf(count))+" where user_id='"+userId+"'";
+        jdbcTemplate.update(query);
+    }
+
     @Override
     public List<TweetProfile> getTweetsByTag(String tag, int limit) {
         query = "select tweet_id from tags where tag='"+tag+"' order by tweet_id desc limit "+limit;
@@ -221,6 +319,18 @@ public class TwitterServiceImpl implements TwitterService {
     @Override
     public String postURLBuilder(BigInteger tweetId){
         return ServletUriComponentsBuilder.fromCurrentContextPath().path("/Twitter/Post/").path(String.valueOf(tweetId)).toUriString();
+    }
+
+    @Override
+    public boolean UnFollowAUser(String userId, String accId) {
+            query = "delete from followers where user_id='"+accId+"' and follower_id='"+userId+"'";
+            if(jdbcTemplate.update(query)<1)
+                return false;
+
+            this.updateFollowersCount(accId,-1);
+            this.updateFollowingCount(userId,-1);
+
+            return true;
     }
 
     //get a tweet based on the tweet id

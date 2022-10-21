@@ -111,10 +111,22 @@ public class TwitterController {
         return ResponseEntity.noContent().build();
     }
 
-    //home
+    //home gets the latest tweets by people i follow
+    @GetMapping("/{sid}/Home/{limit}")
+    public ResponseEntity<List<TweetProfile>> getHome(@PathVariable int sid,@PathVariable int limit){
+        if(checkSessionId(sid)){
+            List<TweetProfile> tweets = twitterService.getTweetsOfFollowing(userId,limit);
+
+            if(tweets!=null)
+                return ResponseEntity.ok(tweets);
+        }
+
+        return ResponseEntity.noContent().build();
+
+    }
 
     //post a tweet
-    @PostMapping("{sid}/Tweet")
+    @PostMapping("/{sid}/Tweet")
     public ResponseEntity<HttpStatus> makeATweet(@PathVariable int sid,@ModelAttribute TweetModel tweetModel) throws IOException{
 
         //if verified user then
@@ -139,14 +151,54 @@ public class TwitterController {
 
 
 
-    //follow
+    //follow someone using their user id
+    @PostMapping("/{sid}/Follow/{accId}")
+    public HttpStatus followAUser(@PathVariable int sid,@PathVariable String accId){
+        if(checkSessionId(sid)){
+            if(twitterService.FollowAUser(userId,accId)){
+                return HttpStatus.OK;
+            }
+        }
+
+        return HttpStatus.EXPECTATION_FAILED;
+    }
 
     //unfollow
+    @PostMapping("/{sid}/UnFollow/{accId}")
+    public HttpStatus unfollowAUser(@PathVariable int sid,@PathVariable String accId){
+        if(checkSessionId(sid)){
+            if(twitterService.UnFollowAUser(userId,accId))
+                return HttpStatus.OK;
+        }
+
+        return HttpStatus.EXPECTATION_FAILED;
+    }
 
     //like a post
+    @PostMapping("/{sid}/Like/{tweetId}")
+    public HttpStatus likeAPost(@PathVariable int sid,@PathVariable BigInteger tweetId){
+        if(checkSessionId(sid)){
+            if(twitterService.likeAPost(userId,tweetId))
+                return HttpStatus.OK;
+        }
+
+        return HttpStatus.EXPECTATION_FAILED;
+    }
+
+
+    //remove like on a  post
+    @PostMapping("/{sid}/UnLike/{tweetId}")
+    public HttpStatus unLikeAPost(@PathVariable int sid,@PathVariable BigInteger tweetId){
+        if(checkSessionId(sid)){
+            if(twitterService.unLikeAPost(userId,tweetId))
+                return HttpStatus.OK;
+        }
+
+        return HttpStatus.EXPECTATION_FAILED;
+    }
 
     //post a comment on a tweet
-    @PostMapping("{sid}/Comment")
+    @PostMapping("/{sid}/Comment")
     public ResponseEntity<HttpStatus> addAComment(@PathVariable int sid, @ModelAttribute TweetModel commentModel) throws IOException{
         if(checkSessionId(sid)){
             if(twitterService.makAComment(commentModel,userId)!=null){
@@ -164,7 +216,7 @@ public class TwitterController {
 
     //find tweets by tag
     @GetMapping("/Tweets/{tag}/{limit}")
-    public ResponseEntity<TweetProfile> getTweetsByTag(@PathVariable String tag,@PathVariable int limit){
+    public ResponseEntity<List<TweetProfile>> getTweetsByTag(@PathVariable String tag,@PathVariable int limit){
         List<TweetProfile> tweets = twitterService.getTweetsByTag(tag,limit);
 
         if(tweets!=null)
@@ -223,7 +275,9 @@ public class TwitterController {
         return ResponseEntity.noContent().build();
     }
 
-    //find user profile by user id
+    //find user profile by user id by a registered user
+
+    //find user profile by user id for no registered user
     @GetMapping("/User/{id}")
     public ResponseEntity<UserProfile> getUserById(@PathVariable String id){
         //get the user from service by id

@@ -37,5 +37,15 @@ public interface TwitterService {
 
     List<TweetProfile> getTweetsByTag(String tag,int limit);
 
+    List<TweetProfile> getTweetsOfFollowing(String userId,int limit);
+
+    boolean FollowAUser(String userId,String accId);
+
+    boolean UnFollowAUser(String userId,String accId);
+
+    boolean likeAPost(String userId,BigInteger tweetId);
+
+    boolean unLikeAPost(String userId,BigInteger tweetId);
+
 
 }
