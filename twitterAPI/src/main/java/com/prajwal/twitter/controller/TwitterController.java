@@ -366,6 +366,13 @@ public class TwitterController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/logout")
+    public HttpStatus logout(){
+        this.userId=null;
+        this.sessionId = new Random().nextInt(0,999);
+        return HttpStatus.OK;
+    }
+
 
     //get session id
     private int getSessionId(){
@@ -374,7 +381,11 @@ public class TwitterController {
 
     //check session id
     private boolean checkSessionId(int sessionId){
-        return sessionId == this.sessionId;
+
+        if((sessionId>=1000) && (sessionId<=20000))
+            return sessionId == this.sessionId;
+
+        return false;
     }
 
 
