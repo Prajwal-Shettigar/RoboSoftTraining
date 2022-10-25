@@ -1,0 +1,68 @@
+
+
+//user table
+create table users(
+    name varchar(30) not null,
+    user_id varchar(30) primary key,
+    password varchar(30) not null,
+    verified tinyint(1) not null,
+    email varchar(20) unique not null,
+    phone_number decimal(10,0) unique not null,
+    profile_photo longblob,
+    following_count decimal(20,0) default 0 not null,
+    followers_count decimal(20) default 0 not null,
+    about varchar(1000),
+    role varchar(20) default 'ROLE_USER'
+);
+
+//tweet table
+create table tweets(
+    tweet_id bigint primary key auto_increment,
+    user_id varchar(30) not null,
+    content varchar(1000) not null,
+    media longblob,
+    tweet_time timestamp default current_timestamp,
+    likes_count decimal(10,0) default 0 not null,
+    file_type varchar(20),
+    file_name varchar(20),
+    foreign key(user_id) references users(user_id)
+);
+
+
+//comments table
+create table comments(
+    tweet_id bigint,
+    comment_id bigint,
+    primary key(tweet_id,comment_id),
+    foreign key(tweet_id) references tweets(tweet_id),
+    foreign key(comment_id) references tweets(tweet_id)
+);
+
+//hash tag table
+create table tags(
+    tag varchar(50),
+    tweet_id bigint,
+    primary key(tag,tweet_id),
+    foreign key(tweet_id) references tweets(tweet_id)
+);
+
+//follower table
+create table followers(
+    user_id varchar(30),
+    follower_id varchar(30),
+    primary key(user_id,follower_id),
+    foreign key(user_id) references users(user_id),
+    foreign key(follower_id) references users(user_id)
+);
+
+//likes table
+create table likes(
+    user_id varchar(30),
+    tweet_id bigint,
+    primary key(user_id,tweet_id),
+    foreign key(user_id) references users(user_id),
+    foreign key(tweet_id) references tweets(tweet_id)
+);
+
+
+
