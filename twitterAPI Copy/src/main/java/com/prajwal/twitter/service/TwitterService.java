@@ -63,4 +63,8 @@ public interface TwitterService {
 
     boolean updateTweet(String userId,TweetModel tweetModel) throws IOException;
 
+    boolean deleteMyProfile(String userId);
+
+    boolean deleteATweet(String userId,BigInteger tweetId);
+
 }

@@ -283,6 +283,32 @@ public class TwitterController {
         return HttpStatus.UNAUTHORIZED;
     }
 
+    //delete a profile
+    @DeleteMapping("/{sid}/Profile")
+    public HttpStatus deleteProfile(@PathVariable int sid){
+        if(checkSessionId(sid)){
+            twitterService.deleteMyProfile(userId);
+            return HttpStatus.OK;
+        }
+
+        return HttpStatus.UNAUTHORIZED;
+    }
+
+    //delete my comment or a tweet
+    @DeleteMapping("Tweet/{sid}/{tweetId}")
+    public HttpStatus deleteTweetOrComment(@PathVariable int sid,@PathVariable BigInteger tweetId){
+        if (checkSessionId(sid)){
+            if(twitterService.deleteATweet(userId,tweetId))
+                return HttpStatus.OK;
+
+            return HttpStatus.EXPECTATION_FAILED;
+        }
+
+            return HttpStatus.UNAUTHORIZED;
+
+    }
+
+
 
 
     //get universal top tweets

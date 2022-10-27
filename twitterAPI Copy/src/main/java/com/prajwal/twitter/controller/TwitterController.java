@@ -287,6 +287,26 @@ public class TwitterController {
         return ResponseEntity.ok(twitterService.getUserById(this.getCurrentUserName(),true));
     }
 
+    //delete a profile
+    @DeleteMapping("/User/Profile")
+    public HttpStatus deleteProfile(){
+        twitterService.deleteMyProfile(this.getCurrentUserName());
+
+        return HttpStatus.OK;
+    }
+
+
+    //delete a comment or a tweet
+    @DeleteMapping("/User/{tweetId}")
+    public HttpStatus deleteTweetOrComment(@PathVariable BigInteger tweetId){
+        if(twitterService.deleteATweet(this.getCurrentUserName(),tweetId))
+            return HttpStatus.OK;
+
+
+        return HttpStatus.EXPECTATION_FAILED;
+    }
+
+
 
 
 

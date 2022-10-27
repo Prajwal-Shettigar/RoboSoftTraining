@@ -412,12 +412,32 @@ public class TwitterServiceImpl implements TwitterService {
     }
 
 
+    @Override
+    public boolean deleteATweet(String userId, BigInteger tweetId) {
+        Tweet tweet = tweetRepository.findById(tweetId).orElse(null);
+
+        if(tweet==null)
+            return false;
+
+        if(tweet.getUserId().equalsIgnoreCase(userId)){
+            tweetRepository.deleteById(tweetId);
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean deleteMyProfile(String userId) {
+        userRepository.deleteById(userId);
+        return true;
+    }
+
     //post a tweet
     @Override
     public Tweet postATweet(TweetModel tweetModel, String userId) throws IOException {
         Tweet tweet = this.addTweetContents(tweetModel, userId);
 
-        System.out.println(tweet);
 
         Tweet returnedTweet = tweetRepository.save(tweet);
 

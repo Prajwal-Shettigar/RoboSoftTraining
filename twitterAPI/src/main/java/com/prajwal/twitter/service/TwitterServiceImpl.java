@@ -70,12 +70,13 @@ public class TwitterServiceImpl implements TwitterService {
     public UserProfile getUserById(String userId,boolean self) {
         User user = userRepository.findById(userId).orElse(null);
         if (user != null) {
-            //create a url; for profile pic
+            //create a url for profile pic
             String profileURL = this.profileURLBuilder(user.getUserId());
 
             //create a user profile
             UserProfile userProfile = new UserProfile(user.getName(), user.getUserId(), user.isVerified(), profileURL, user.getFollowingCount(), user.getFollowersCount(), user.getAbout());
 
+            //if viewing own details then show extra details
             if(self){
                 userProfile.setEmail(user.getEmail());
                 userProfile.setPhoneNumber(user.getPhoneNumber());
@@ -91,8 +92,11 @@ public class TwitterServiceImpl implements TwitterService {
     //get profile pic by id
     @Override
     public byte[] getProfilePictureById(String userId) {
+
+
         User user = userRepository.findById(userId).orElse(null);
 
+        //check if user exists
         if (user != null) {
             if (user.getProfilePhoto() != null)
                 return user.getProfilePhoto();
@@ -118,6 +122,7 @@ public class TwitterServiceImpl implements TwitterService {
     //get comments on a tweet
     @Override
     public List<TweetProfile> getCommentsByTweetId(BigInteger tweetId, int limit) {
+        //get the most recent comments
         query = "select comment_id from comments where tweet_id="+tweetId+" order by comment_id desc limit "+limit;
 
         List<BigInteger> commentIds = jdbcTemplate.queryForList(query, BigInteger.class);
@@ -129,6 +134,8 @@ public class TwitterServiceImpl implements TwitterService {
 
     @Override
     public List<TweetProfile> getTopGlobalTweets(int limit) {
+
+        //get the most recent tweets ordered by likes
         query = "select tweet_id from tweets where tweet_id not in (select comment_id from comments)order by tweet_time desc,likes_count desc limit "+limit;
 
         List<BigInteger> tweetIds = jdbcTemplate.queryForList(query, BigInteger.class);
@@ -159,8 +166,11 @@ public class TwitterServiceImpl implements TwitterService {
             return false;
         }
 
+        //increment followers of user whom you are following
         this.updateFollowersCount(accId,1);
 
+
+        //increment self following count
         this.updateFollowingCount(userId,1);
 
         return true;
@@ -168,11 +178,15 @@ public class TwitterServiceImpl implements TwitterService {
 
     @Override
     public boolean unLikeAPost(String userId, BigInteger tweetId) {
+
+        //remove from likes table
         query = "delete from likes where user_id='"+userId+"' and tweet_id="+tweetId;
 
         if(jdbcTemplate.update(query)<1)
             return false;
 
+
+        //decrement the likes on post
         this.changeLikesCountOnPost(tweetId,-1);
 
         return true;
@@ -181,7 +195,7 @@ public class TwitterServiceImpl implements TwitterService {
     @Override
     public List<UserProfile> getMyFollowers(String userId,int limit) {
 
-        //get id of the user who follows u and also your id if he follows u back
+        //get id of the user who follows u and also your id if he follows you back
         query = "select f.follower_id,b.follower_id from followers f left join followers b on f.user_id=b.follower_id and f.follower_id=b.user_id where f.user_id='"+userId+"' limit "+limit;
 
         List<Follower> followers = jdbcTemplate.query(query,(resultSet,noOfRows)->{
@@ -370,6 +384,8 @@ public class TwitterServiceImpl implements TwitterService {
     public boolean updateProfile(String userId, RegistrationModel model) throws IOException{
         User user  = userRepository.findById(userId).orElse(null);
 
+
+        //update only those properties which have been set by the user
         if(model.getName()!=null)
             user.setName(model.getName());
 
@@ -396,6 +412,31 @@ public class TwitterServiceImpl implements TwitterService {
 
         return true;
 
+    }
+
+
+    //delete self profile
+    @Override
+    public boolean deleteMyProfile(String userId) {
+        userRepository.deleteById(userId);
+        return true;
+    }
+
+
+    //delete my tweet
+    @Override
+    public boolean deleteATweet(String userId, BigInteger tweetId) {
+        Tweet tweet = tweetRepository.findById(tweetId).orElse(null);
+
+        if(tweet==null)
+            return false;
+
+        if(tweet.getUserId().equalsIgnoreCase(userId)){
+            tweetRepository.deleteById(tweetId);
+            return true;
+        }
+
+        return false;
     }
 
     //get tweets by tweet ids
@@ -452,6 +493,8 @@ public class TwitterServiceImpl implements TwitterService {
     public boolean updateTweet(String userId, TweetModel tweetModel) throws IOException {
         Tweet tweet = tweetRepository.findById(tweetModel.getTweetId()).orElse(null);
 
+
+        //update only those details which are set by the user
         if(tweet!=null){
 
             if(!(tweet.getUserId().equalsIgnoreCase(userId)))
@@ -539,7 +582,10 @@ public class TwitterServiceImpl implements TwitterService {
             if(jdbcTemplate.update(query)<1)
                 return false;
 
+            //decrement the followers count of the targeted user
             this.updateFollowersCount(accId,-1);
+
+            //decrement self following count
             this.updateFollowingCount(userId,-1);
 
             return true;
