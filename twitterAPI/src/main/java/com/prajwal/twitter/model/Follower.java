@@ -1,5 +1,8 @@
 package com.prajwal.twitter.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class Follower {
 
     private String userId;

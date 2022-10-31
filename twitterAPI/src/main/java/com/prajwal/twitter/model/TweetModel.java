@@ -1,9 +1,12 @@
 package com.prajwal.twitter.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigInteger;
 
+
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class TweetModel {
 
     private BigInteger tweetId;

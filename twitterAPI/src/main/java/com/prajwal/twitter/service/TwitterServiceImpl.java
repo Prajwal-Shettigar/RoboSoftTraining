@@ -157,6 +157,10 @@ public class TwitterServiceImpl implements TwitterService {
     @Override
     public boolean FollowAUser(String userId, String accId) {
 
+        //check if a self follow
+        if(userId.equalsIgnoreCase(accId))
+            return false;
+
         //add into followers table
         query = "insert into followers values('"+accId+"','"+userId+"')";
 

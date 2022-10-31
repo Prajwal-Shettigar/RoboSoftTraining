@@ -193,3 +193,22 @@ if u have a larger application breaking down into different smaller applications
 
 connecting to apis
 apis just handle requests and send reponses they sort of provide an functionality that u can use through sending requests to these and handle the responses that they send 
+
+
+//global exception handling
+have a seperate class with @ControllerAdvice   and have methods in it which will handle particular type of exceptions 
+
+ @ExceptionHandler(value = ExceptionThree.class)
+    public ResponseEntity<Object> forExceptionThree(ExceptionThree exceptionThree){
+        return new ResponseEntity<>("exception three was thrown..", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+make sure the args to the method and also the value mentioned are of same class
+
+if specific ecption isnot mentioned will look for the general one
+@ExceptionHandler(value=Exception.class)
+    public ResponseEntity<Object> forAllExceptions(Exception e){
+        return new ResponseEntity<>("for all exceptions..",HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+will handle all exceptions which are subclasses of Exception class

@@ -1,27 +1,32 @@
 package com.prajwal.twitter.config;
 
 
-import com.fasterxml.jackson.databind.annotation.NoClass;
+import com.prajwal.twitter.filter.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableWebSecurity
 public class MySecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Autowired
     MyUserDetailsService myUserDetailsService;
+
+    @Autowired
+    JwtFilter jwtFilter;
+
+    @Autowired
+    JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Bean
     AuthenticationProvider getAuthProvider(){
@@ -42,14 +47,28 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter{
                 .antMatchers("Twitter/User/**").hasAnyRole("USER","ADMIN")
                 .antMatchers("Twitter/Non/**").permitAll()
                 .and()
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .and()
                 .httpBasic()
                 .and()
                 .formLogin();
     }
 
 
+
     @Bean
     public PasswordEncoder getPasswordEncoder(){
        return new BCryptPasswordEncoder();
+    }
+
+
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 }

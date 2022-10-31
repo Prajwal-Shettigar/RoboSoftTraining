@@ -1,9 +1,12 @@
 package com.prajwal.twitter.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class TweetProfile {
 
 

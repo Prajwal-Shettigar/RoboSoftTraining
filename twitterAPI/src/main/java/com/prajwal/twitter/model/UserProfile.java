@@ -1,7 +1,11 @@
 package com.prajwal.twitter.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.math.BigDecimal;
 
+
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class UserProfile {
     private String userName;
     private String userId;
