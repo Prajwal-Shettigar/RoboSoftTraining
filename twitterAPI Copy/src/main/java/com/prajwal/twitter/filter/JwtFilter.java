@@ -44,7 +44,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         }else
         {
-            System.out.println("no valid toke found...");
+            System.out.println("no valid token found...");
         }
 
         if(username!=null && SecurityContextHolder.getContext().getAuthentication()==null){

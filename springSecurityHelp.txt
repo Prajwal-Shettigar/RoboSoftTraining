@@ -61,6 +61,26 @@ setting basic auth
 .and().httpBasic()
 otherwise cant login on postman
 
+//enable global method security
+extend global method security class and annotate it with 
+@EnableGlobalMethodSecurity(
+        securedEnabled = true
+)
+public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
+}
+
+
+
+@Secured("ROLE_USER") even if u have mentioned in ant matchers this preceded the declaration
+@Secured("{ROLE_1,ROLE_2}")
+
+@RolesAllowed("") similar to @Secured
+
+Account SID
+ACd1ece504ef220e2478f7cb5671193868
+token
+6def5f3f1b4ab882da268c2aa1412b4f
+
 
 
 using normal jdbc requires

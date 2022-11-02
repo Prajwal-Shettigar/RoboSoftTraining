@@ -5,13 +5,17 @@ import com.prajwal.twitter.customeExceptions.DuplicateUsername;
 import com.prajwal.twitter.customeExceptions.NoContentToDisplay;
 import com.prajwal.twitter.customeExceptions.UserDoesNotExists;
 import io.jsonwebtoken.MalformedJwtException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = MalformedJwtException.class)
     public ResponseEntity<?> malformedJwtException(MalformedJwtException malformedJwtException){
@@ -38,4 +42,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> duplicateUsernameException(DeletionFailed deletionFailed){
         return new ResponseEntity<>("deletion failed..",HttpStatus.EXPECTATION_FAILED);
     }
+
+
+    //using inbuilt handlers
+    @Override
+    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        return new ResponseEntity<>("change the method of the request..",HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
+
+
 }

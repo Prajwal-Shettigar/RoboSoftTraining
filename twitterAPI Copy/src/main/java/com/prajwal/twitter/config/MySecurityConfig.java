@@ -44,7 +44,7 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter{
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("Twitter/User/**").hasAnyRole("USER","ADMIN")
+//                .antMatchers("Twitter/User/**").hasAnyRole("USER","ADMIN")
                 .antMatchers("Twitter/Non/**").permitAll()
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

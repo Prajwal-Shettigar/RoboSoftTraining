@@ -1,5 +1,6 @@
 package com.prajwal.twitter.controller;
 
+import com.prajwal.twitter.config.AllUserPermission;
 import com.prajwal.twitter.config.MyUserDetailsService;
 import com.prajwal.twitter.config.TokenManager;
 import com.prajwal.twitter.customeExceptions.DuplicateUsername;
@@ -18,12 +19,16 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -81,8 +86,21 @@ public class GeneralController {
         throw new DuplicateUsername();
     }
 
-    @PostMapping("/login")
+//    @Secured({"ROLE_USER","ROLE_ADMIN"})
+
+//    @RolesAllowed("ROLE_USER")
+
+//    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+
+//    @PreAuthorize("#loginModel.getUserId()=='pj878'")
+
+//    @PostAuthorize("#loginModel.getUserId()=='pj878'")
+
+    @AllUserPermission
+    @PostMapping("/Login")
     public ResponseEntity<JwtResponseModel> userLogin(@RequestBody RegistrationModel loginModel){
+
+        System.out.println("login attempted..");
 
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginModel.getUserId(),loginModel.getPassword()));
@@ -140,6 +158,7 @@ public class GeneralController {
 
 
         throw new UserDoesNotExists();
+
     }
 
 
