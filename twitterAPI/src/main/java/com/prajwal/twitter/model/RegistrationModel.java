@@ -1,4 +1,4 @@
-package com.prajwal.twitter.model;
+6package com.prajwal.twitter.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.web.multipart.MultipartFile;
