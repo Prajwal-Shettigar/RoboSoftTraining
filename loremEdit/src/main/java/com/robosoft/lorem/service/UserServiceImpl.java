@@ -1,13 +1,13 @@
 package com.robosoft.lorem.service;
 
 import com.robosoft.lorem.entity.Addon;
-import com.robosoft.lorem.entity.Payment;
 import com.robosoft.lorem.model.*;
 import com.robosoft.lorem.routeResponse.Location;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +29,9 @@ public class UserServiceImpl implements UserService{
 
     @Value("${page.data.count}")
     private int perPageDataCount;
+
+    @Value("${nearby.distance}")
+    private int nearbyDistance;
 
     String query;
 
@@ -52,8 +55,8 @@ public class UserServiceImpl implements UserService{
             searchFilter.setAddress("");
 
 
-        String selectFields = "SELECT DISTINCT " +
-                "r.restaurantId," +
+        String selectFields = "SELECT DISTINCT(" +
+                "r.restaurantId)," +
                 "r.restaurantName," +
                 "r.overAllRating," +
                 "r.minimumCost," +
@@ -72,10 +75,10 @@ public class UserServiceImpl implements UserService{
                 "opened," +
                 "r.averageCost,"+
                 "a.addressDesc,"+
-                "r.averageDeliveryTime ";
+                "r.averageDeliveryTime";
 
 
-        query = "FROM restaurant r " +
+        query = " FROM restaurant r " +
                 "inner join menu m " +
                 "on r.restaurantId=m.restaurantId " +
                 "inner join address a " +
@@ -94,14 +97,22 @@ public class UserServiceImpl implements UserService{
 
 
         if(searchFilter.getPageNumber()==0)
-            searchFilter.setPageNumber(0);
+            searchFilter.setPageNumber(1);
         if(searchFilter.getPageNumber()==1){
-            String countQuery = "SELECT count(distinct r.restaurantId) ";
-            long count = jdbcTemplate.queryForObject(countQuery+query, Long.class);
+            String countQuery = "SELECT count(distinct r.restaurantId)";
+            long count=0;
+            System.out.println(countQuery+query);
+            try{
+                count= jdbcTemplate.queryForObject(countQuery+query, Long.class);
+            }catch (EmptyResultDataAccessException emptyResultDataAccessException){
+                restaurantSearchResult.setTotalRocordsCount((Long.valueOf(0)));
+                return restaurantSearchResult;
+
+            }
+
             restaurantSearchResult.setTotalRocordsCount(count);
 
-            if (count==0)
-                return restaurantSearchResult;
+
         }
 
 
@@ -170,6 +181,12 @@ public class UserServiceImpl implements UserService{
         if(searchFilter.getBrandId()>0)
             query=query+" and r.brandId="+searchFilter.getBrandId()+" ";
 
+        //havershine formulae
+        //( 6371 * acos( cos( radians(fromLat) ) * cos( radians( lat ) )
+        //* cos( radians( lng ) - radians(fromLang) ) + sin( radians(fromLat) ) * sin(radians(lat)) ) )
+        if(searchFilter.getLocation()!=null)
+            query=query+" and ( 6371 * acos( cos( radians("+searchFilter.getLocation().getLatitude()+") ) * cos( radians( a.lattitude ) ) * cos( radians( a.longitude ) - radians("+searchFilter.getLocation().getLongitude()+") ) + sin( radians("+searchFilter.getLocation().getLatitude()+") ) * sin( radians( a.lattitude ) ) ) )<"+nearbyDistance;
+
         if(!searchFilter.isDescRating())
             query=query+" order by r.overAllRating asc ";
         else
@@ -191,13 +208,34 @@ public class UserServiceImpl implements UserService{
 
 
     @Override
-    public NearByBrandsSearchResult getNearbyBrands(String address, int limit){
-        query="select distinct b.brandId,b.brandName,b.description,b.logo,b.profilePic,b.brandOrigin from brand b inner join restaurant r on b.brandId=r.brandId inner join address a on r.addressId=a.addressId where addressDesc like '%"+address+"%' limit "+limit;
+    public NearByBrandsSearchResult getNearbyBrands(Location location, int pageNumber){
+        long offset = this.getOffset(pageNumber);
+        String startQuery="select count(distinct r.brandId) from brand b inner join restaurant r on b.brandId=r.brandId inner join address a on r.addressId=a.addressId where ";
+
+        query="( 6371 * acos( cos( radians("+location.getLatitude()+") ) * cos( radians( a.lattitude ) ) * cos( radians( a.longitude ) - radians("+location.getLongitude()+") ) + sin( radians("+location.getLatitude()+") ) * sin( radians( a.lattitude ) ) ) )<"+nearbyDistance;
 
 
         NearByBrandsSearchResult nearByBrandsSearchResult = new NearByBrandsSearchResult();
 
+        long count =0;
 
+        if(pageNumber<=1 && pageNumber>=0){
+            System.out.println(startQuery+query);
+            try {
+                count = jdbcTemplate.queryForObject(startQuery + query, Long.class);
+                nearByBrandsSearchResult.setTotalResultsCount(count);
+            }catch (EmptyResultDataAccessException emptyResultDataAccessException){
+                nearByBrandsSearchResult.setTotalResultsCount(count);
+                return nearByBrandsSearchResult;
+            }
+        }
+
+
+
+        startQuery="select distinct b.brandId,b.brandName,b.description,b.logo,b.profilePic,b.brandOrigin from brand b inner join restaurant r on b.brandId=r.brandId inner join address a on r.addressId=a.addressId where ";
+        query = startQuery+query+" limit "+offset+","+perPageDataCount;
+
+        System.out.println(query);
         List<BrandSearchModel> nearByBrands =  jdbcTemplate.query(query,(rs, noOfRows)->{
             BrandSearchModel brandSearchModel = new BrandSearchModel();
             brandSearchModel.setBrandId(rs.getInt(1));
@@ -210,7 +248,7 @@ public class UserServiceImpl implements UserService{
             return brandSearchModel;
         });
 
-        nearByBrandsSearchResult.setResultsCount(nearByBrands.size());
+        nearByBrandsSearchResult.setPageResultsCount(nearByBrands.size());
         nearByBrandsSearchResult.setNearByBrands(nearByBrands);
 
         return nearByBrandsSearchResult;
@@ -227,6 +265,9 @@ public class UserServiceImpl implements UserService{
         if(cartModel.getCartId()!=null){
             this.deleteCartItems(cartModel.getCartId());
             cartId = this.updateCart(cartModel);
+
+            if(cartId==-1)
+                return null;
         }
         //if it's a new cart then create it in the database and get the id
         else {
@@ -289,14 +330,17 @@ public class UserServiceImpl implements UserService{
 
     //update a cart in the db
     public int updateCart(CartModel cartModel){
-        query = "update cart set cookingInstructions=?,totalAmount=? where cartId=? and userId=?";
+        query = "update cart set cookingInstructions=?,totalAmount=? where cartId=? and userId=? and cartDeleted=false";
 
-        jdbcTemplate.update(query,(preparedStatement)->{
+        int updateCount = jdbcTemplate.update(query,(preparedStatement)->{
             preparedStatement.setString(1,cartModel.getCookingInstruction());
             preparedStatement.setDouble(2,cartModel.getToPay());
             preparedStatement.setInt(3,cartModel.getCartId());
             preparedStatement.setInt(4,cartModel.getUserId());
         });
+
+        if(updateCount<1)
+            return -1;
 
         return cartModel.getCartId();
     }

@@ -1,13 +1,14 @@
 package com.robosoft.lorem.service;
 
 import com.robosoft.lorem.model.*;
+import com.robosoft.lorem.routeResponse.Location;
 
 
 public interface UserService {
 
     RestaurantSearchResult searchRestaurant(SearchFilter searchFilter);
 
-    NearByBrandsSearchResult getNearbyBrands(String address, int limit);
+    NearByBrandsSearchResult getNearbyBrands(Location location, int pageNumber);
 
     CartModel saveOrUpdateCart(CartModel cartModel);
 

@@ -2,11 +2,15 @@ package com.robosoft.lorem.controller;
 
 
 import com.robosoft.lorem.model.*;
+import com.robosoft.lorem.routeResponse.Location;
 import com.robosoft.lorem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 public class UserController {
@@ -34,16 +38,32 @@ public class UserController {
 
 
     //get nearby brands
-    @GetMapping("/Brands/{address}/{limit}")
-    public NearByBrandsSearchResult getNearByBrands(@PathVariable String address, @PathVariable int limit){
-        return userService.getNearbyBrands(address,limit);
+    @GetMapping("/Brands/{pageNumber}")
+    public ResponseEntity<?> getNearByBrands(@RequestBody Location address, @PathVariable int pageNumber){
+        NearByBrandsSearchResult nearByBrandsSearchResult = userService.getNearbyBrands(address,pageNumber);
+
+        if(pageNumber==1 || pageNumber==0){
+            if(nearByBrandsSearchResult.getTotalResultsCount()==0)
+                return new ResponseEntity<String>("No Brands Nearby..",HttpStatus.NO_CONTENT);
+        }
+
+        if(nearByBrandsSearchResult.getPageResultsCount()<1)
+            return new ResponseEntity<String>("No Contents in the requested page..",HttpStatus.NO_CONTENT);
+
+        return ResponseEntity.ok(nearByBrandsSearchResult);
     }
 
 
     //create and update cart
     @PostMapping("/Cart")
-    public CartModel createOrUpdateCart(@RequestBody CartModel cartModel){
-        return userService.saveOrUpdateCart(cartModel);
+    public ResponseEntity<?> createOrUpdateCart(@RequestBody CartModel cartModel){
+        CartModel returnedCartModel =  userService.saveOrUpdateCart(cartModel);
+
+        if(returnedCartModel==null)
+            return new ResponseEntity<>("Cart Not Updaated..",HttpStatus.EXPECTATION_FAILED);
+
+        return ResponseEntity.ok(returnedCartModel);
+
     }
 
 
@@ -128,6 +148,7 @@ public class UserController {
 
         return new ResponseEntity<>(returningCartModel,HttpStatus.OK);
     }
+
 
 
 
