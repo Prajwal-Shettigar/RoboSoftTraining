@@ -41,7 +41,7 @@ public interface UserService {
 
     RestaurantSearchResult searchRestaurant(SearchFilter searchFilter);
 
-    NearByBrandsSearchResult getNearbyBrands(Location address, int pageNumber);
+    NearByBrandsSearchResult getNearbyBrands(Location address, int pageNumber,int limit);
 
     int getUserIdFromEmail();
 
@@ -51,9 +51,9 @@ public interface UserService {
 
     UserProfile getUserProfile(int userIdFromEmail);
 
-    OrderResponseModel getMyOrdersByStatus(String orderStatus, int userIdFromEmail, int pageNumber);
+    OrderResponseModel getMyOrdersByStatus(String orderStatus, int userIdFromEmail, int pageNumber,int limit);
 
-    CartsResponseModel getMyCarts(int userIdFromEmail, int pageNumber);
+    CartsResponseModel getMyCarts(int userIdFromEmail, int pageNumber,int limit);
 
     boolean removeCart(int userIdFromEmail, int cartId);
 

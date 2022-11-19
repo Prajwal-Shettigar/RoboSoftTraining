@@ -505,7 +505,10 @@ public class UserServiceImpl implements UserService,UserDetailsService
 
         RestaurantSearchResult restaurantSearchResult = new RestaurantSearchResult();
 
-        long offset = this.getOffset(searchFilter.getPageNumber());
+        List<?> list = this.getOffsetUsingCustomLimit(searchFilter.getPageNumber(),searchFilter.getLimit());
+
+        int limit = (int)list.get(0);
+        long offset = (long)list.get(1);
 
 
         if(searchFilter.getRestaurantOrFoodType()==null)
@@ -581,7 +584,7 @@ public class UserServiceImpl implements UserService,UserDetailsService
 
 
 
-        query = selectFields+query+"limit "+offset+","+perPageDataCount;
+        query = selectFields+query+"limit "+offset+","+limit;
 
         System.out.println(query);
 
@@ -662,17 +665,39 @@ public class UserServiceImpl implements UserService,UserDetailsService
     }
 
     public long getOffset(int pageNumber){
-        if(pageNumber==0)
+        if(pageNumber<1)
             pageNumber=1;
 
         return (long)perPageDataCount*(pageNumber-1);
     }
 
+    public List<?> getOffsetUsingCustomLimit(int pageNumber,int limit){
+
+        List list = new ArrayList();
+
+        if(pageNumber<1)
+            pageNumber=1;
+
+        if(limit<1)
+            limit=perPageDataCount;
+
+        list.add(limit);
+        list.add( (long)limit*(pageNumber-1));
+
+
+        return list;
+
+    }
+
 
 
     @Override
-    public NearByBrandsSearchResult getNearbyBrands(Location location, int pageNumber){
-        long offset = this.getOffset(pageNumber);
+    public NearByBrandsSearchResult getNearbyBrands(Location location, int pageNumber,int limit){
+        List<?> list = this.getOffsetUsingCustomLimit(pageNumber,limit);
+
+        limit = (int)list.get(0);
+        long offset = (long)list.get(1);
+
         String startQuery="select count(distinct r.brandId) from brand b inner join restaurant r on b.brandId=r.brandId inner join address a on r.addressId=a.addressId where ";
 
         query="( 6371 * acos( cos( radians("+location.getLatitude()+") ) * cos( radians( a.lattitude ) ) * cos( radians( a.longitude ) - radians("+location.getLongitude()+") ) + sin( radians("+location.getLatitude()+") ) * sin( radians( a.lattitude ) ) ) )<"+nearbyDistance;
@@ -696,7 +721,7 @@ public class UserServiceImpl implements UserService,UserDetailsService
 
 
         startQuery="select distinct b.brandId,b.brandName,b.description,b.logo,b.profilePic,b.brandOrigin from brand b inner join restaurant r on b.brandId=r.brandId inner join address a on r.addressId=a.addressId where ";
-        query = startQuery+query+" limit "+offset+","+perPageDataCount;
+        query = startQuery+query+" limit "+offset+","+limit;
 
         System.out.println(query);
         List<BrandSearchModel> nearByBrands =  jdbcTemplate.query(query,(rs, noOfRows)->{
@@ -877,14 +902,17 @@ public class UserServiceImpl implements UserService,UserDetailsService
     //get orders  of a user using userId and order status
 
     @Override
-    public OrderResponseModel getMyOrdersByStatus(String orderStatus, int userId,int pageNumber) {
+    public OrderResponseModel getMyOrdersByStatus(String orderStatus, int userId,int pageNumber,int limit) {
 
         OrderResponseModel orderResponseModel = new OrderResponseModel();
 
 
         int orderIndex = this.getStatusIndex(orderStatus);
+        List<?> list = this.getOffsetUsingCustomLimit(pageNumber,limit);
 
-        long offset = this.getOffset(pageNumber);
+        limit = (int)list.get(0);
+        long offset = (long)list.get(1);
+
 
         //for any other status
         if(orderIndex==9)
@@ -908,7 +936,7 @@ public class UserServiceImpl implements UserService,UserDetailsService
                 return orderResponseModel;
         }
 
-        query=startingQuery+query+" limit "+offset+","+perPageDataCount;
+        query=startingQuery+query+" limit "+offset+","+limit;
 
         List<OrderModel> orders = this.getOrdersUsingQuery(query);
 
@@ -971,8 +999,12 @@ public class UserServiceImpl implements UserService,UserDetailsService
 
     //get a carts list
     @Override
-    public CartsResponseModel getMyCarts(int userId, int pageNumber) {
-        long offset = this.getOffset(pageNumber);
+    public CartsResponseModel getMyCarts(int userId, int pageNumber,int limit) {
+        List<?> list = this.getOffsetUsingCustomLimit(pageNumber,limit);
+
+        limit = (int)list.get(0);
+        long offset = (long)list.get(1);
+
 
         CartsResponseModel cartsResponseModel = new CartsResponseModel();
 
@@ -987,7 +1019,7 @@ public class UserServiceImpl implements UserService,UserDetailsService
                 return cartsResponseModel;
         }
 
-        query = "select cartId,restaurantId,totalAmount"+query+" limit "+offset+","+perPageDataCount;
+        query = "select cartId,restaurantId,totalAmount"+query+" limit "+offset+","+limit;
 
 
         List<CartModel> carts = jdbcTemplate.query(query,(resultSet,noOfRows)->{
