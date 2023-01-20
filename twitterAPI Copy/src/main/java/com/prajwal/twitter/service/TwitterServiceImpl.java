@@ -237,7 +237,12 @@ public class TwitterServiceImpl implements TwitterService {
         //get the user id of users i follow
         query = "select user_id from followers where follower_id='"+userId+"' limit "+limit;
 
-        List<String> followingIds = jdbcTemplate.queryForList(query,String.class);
+        List<
+
+
+
+
+                String> followingIds = jdbcTemplate.queryForList(query,String.class);
 
         if(followingIds!=null){
 

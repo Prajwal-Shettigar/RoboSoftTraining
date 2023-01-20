@@ -39,17 +39,13 @@ public class DAOServiceImpl implements DAOService
             String email= jdbcTemplate.queryForObject("select emailId from newUser where emailId=?",new Object[]{emailId},String.class);
             if(email!=null)
             {
-                try
+                boolean check_verified_or_not=jdbcTemplate.queryForObject("select otpVerified from newUser where emailId=?",new Object[]{emailId},Boolean.class);
+                if(check_verified_or_not)
                 {
-                    boolean check_verified_or_not=jdbcTemplate.queryForObject("select otpVerified from newUser where emailId=?",new Object[]{emailId},Boolean.class);
-                    return false;
-                }
-                catch (Exception e)
-                {
-                    // email is present but if not verified
                     jdbcTemplate.update(UPDATE_OTP,tfaCode,(System.currentTimeMillis()/1000)+120,email);
                     return true;
                 }
+                return false;
             }
         }
 

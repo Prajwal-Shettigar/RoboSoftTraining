@@ -181,3 +181,141 @@ using mappedby in @OneToMany will create a foreign key column in the other table
 using in just one entity will create a table with 2 foreign keys
 using in both entities will create 2 similar tables with 2 foreign keys
 using mapped by in any one will create a single table with 2 foreign keys
+
+
+setting default values to columns
+ @Column(columnDefinition = "varchar(255) default null")
+mention hte datatype as well otherwise might give syntax error
+
+use jakarta with java17 or above
+
+@PostLoad 
+used to load the value of a variable after all the variables in class have been intialized
+
+@PrePersist
+used to assign a value to the variable before sending it to the database
+
+@Transient
+will not be mapped onto the database
+
+
+creating a composite primary key
+@Embeddable
+public class DishRestaurantKey implements Serializable {
+
+    private Integer dishId;
+
+    private Integer restaurantId;
+}
+
+@Entity
+public class Menu {
+
+    @EmbeddedId
+    DishRestaurantKey id;
+
+    @ManyToOne
+    @JoinColumn(name="restaurant_id")
+    @MapsId(value="restaurantId")
+    Restaurant restaurant;
+
+    @ManyToOne
+    @JoinColumn(name="dish_id")
+    @MapsId(value="dishId")
+    Dish dish;
+
+
+
+}
+
+//auto generated string column
+
+
+    @Id
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name="uuid" , strategy = "uuid2")
+    private String cardNumber;
+
+
+//beautify the sql statements in spring boot for jpa
+
+
+//using pagination
+//2nd page of size 20
+Page<User> users = repository.findAll(PageRequest.of(1, 20));
+
+
+//crud vs list crud
+
+basically these repos contains crud functionalities but list crude returns an list in place of iterable in certain large result set returning methods
+
+ List<Person> findByEmailAddressAndLastname(EmailAddress emailAddress, String lastname);
+
+  // Enables the distinct flag for the query
+  List<Person> findDistinctPeopleByLastnameOrFirstname(String lastname, String firstname);
+  List<Person> findPeopleDistinctByLastnameOrFirstname(String lastname, String firstname);
+
+  // Enabling ignoring case for an individual property
+  List<Person> findByLastnameIgnoreCase(String lastname);
+  // Enabling ignoring case for all suitable properties
+  List<Person> findByLastnameAndFirstnameAllIgnoreCase(String lastname, String firstname);
+
+  // Enabling static ORDER BY for a query
+  List<Person> findByLastnameOrderByFirstnameAsc(String lastname);
+  List<Person> findByLastnameOrderByFirstnameDesc(String lastname);
+
+could have distinct or top ,firstv between find and by
+
+can have between ,less than,greater than,like with properties attached which will be seperatred by and or or
+
+ignore case
+use ignore case like findByLastNameIgnoreCase  or findByFirstNameAndLastNameAllIgnoreCase iff multiple/all properties among the query supports ignore case
+
+traverse a property within another
+List<Person> findByAddress_ZipCode(ZipCode zipCode);  traverse zipcode within address property of the entity
+
+If you do not want to apply any sorting or pagination, use Sort.unsorted() and Pageable.unpaged().
+
+sorting
+
+Sort sort = Sort.by("firstname").ascending()
+  .and(Sort.by("lastname").descending());
+
+
+type safe sort
+TypedSort<Person> person = Sort.sort(Person.class);
+
+Sort sort = person.by(Person::getFirstname).ascending()
+  .and(person.by(Person::getLastname).descending());
+
+//using first or top
+//if u dont specify size its default 1
+
+User findFirstByOrderByLastnameAsc();
+
+User findTopByOrderByAgeDesc();
+
+Page<User> queryFirst10ByLastname(String lastname, Pageable pageable);
+
+Slice<User> findTop3ByLastname(String lastname, Pageable pageable);
+
+List<User> findFirst10ByLastname(String lastname, Sort sort);
+
+List<User> findTop10ByLastname(String lastname, Pageable pageable);
+
+
+//returning a streamable
+interface PersonRepository extends Repository<Person, Long> {
+  Streamable<Person> findByFirstnameContaining(String firstname);
+  Streamable<Person> findByLastnameContaining(String lastname);
+}
+
+Streamable<Person> result = repository.findByFirstnameContaining("av")
+  .and(repository.findByLastnameContaining("ea"));
+
+returning custom streamable
+
+
+Repository methods returning collections, collection alternatives, wrappers, and streams are guaranteed never to return null but rather the corresponding empty representation.
+
+<jpa:repositories base-package="com.acme.repositories" />

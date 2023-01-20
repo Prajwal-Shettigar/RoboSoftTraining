@@ -6,6 +6,7 @@ import com.robosoft.lorem.model.Orders;
 import com.robosoft.lorem.model.OfferRequestBody;
 import com.robosoft.lorem.service.AdminService;
 import com.robosoft.lorem.service.CloundinaryConfig;
+import com.robosoft.lorem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,10 @@ public class AdminController
     @Autowired
     CloundinaryConfig cloudinary;
 
+    @Autowired
+    UserService userService;
+
+    //abhishek
     @PostMapping("/addBrand")
     public ResponseEntity<?> addBrand(@ModelAttribute Brand brand)
     {
@@ -43,13 +48,52 @@ public class AdminController
 
 
 
-    //assign role to a user
-    @PatchMapping("/Role/{userId}/{role}")
-    public ResponseEntity<?> assignRole(@PathVariable int userId,@PathVariable String role){
-        if(adminService.changeRole(userId, role))
-            return new ResponseEntity<>("Role Changed Successfully..",HttpStatus.OK);
 
-        return new ResponseEntity<>("Some Error Occurred While Changing Role..",HttpStatus.EXPECTATION_FAILED);
+
+
+
+    //akrithi
+    @PostMapping("/addOffers")
+    public ResponseEntity<?> addOffers(@ModelAttribute OfferRequestBody offer) throws IOException {
+
+        Map uploadResult2 = cloudinary.upload(offer.getPhoto().getBytes(), ObjectUtils.asMap("resourcetype", "auto"));
+        String photo_url=uploadResult2.get("url").toString();
+        offer.setPhoto_url(photo_url);
+
+        boolean offer_obj= adminService.addOffers(offer);
+        if(offer_obj)
+        {
+            return new ResponseEntity<>("Offer added successfully", HttpStatus.OK);
+        }
+        return  new ResponseEntity<>("Cannot add offers",HttpStatus.FORBIDDEN);
+    }
+
+
+    //nithin
+
+    //   ADDING OPENING INFORMATION
+    @PostMapping("/addOpeningInfo/{restaurantId}")
+    public ResponseEntity<String> addOpeningInfo(@ModelAttribute OpeningInfo openingInfo, @PathVariable int restaurantId) throws Exception {
+        if (userService.addOpeningInfo(openingInfo, restaurantId, userService.getUserIdFromEmail())) {
+            return ResponseEntity.status(HttpStatus.OK).body("successful");
+
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Task failed");
+
+    }
+
+
+
+
+    @PostMapping("/addMenu")
+    public ResponseEntity<String> addMenu(@ModelAttribute Menu menu) throws Exception {
+        Map uploadResult = cloudinary.upload(menu.getDishPhoto().getBytes(), ObjectUtils.asMap("resourcetype", "auto"));
+        menu.setDishPhotoLink(uploadResult.get("url").toString());
+        if(adminService.addMenu(menu))
+            return ResponseEntity.status(HttpStatus.OK).body("Menu added");
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Task failed");
+
     }
 
     @PostMapping("/addRestaurant")
@@ -64,7 +108,6 @@ public class AdminController
 
     }
 
-
     @PostMapping("/addDish")
     public ResponseEntity<String> addDish(@ModelAttribute Dish dish) throws Exception {
         if(adminService.addDish(dish))
@@ -75,16 +118,6 @@ public class AdminController
 
     }
 
-    @PostMapping("/addMenu")
-    public ResponseEntity<String> addMenu(@ModelAttribute Menu menu) throws Exception {
-        Map uploadResult = cloudinary.upload(menu.getDishPhoto().getBytes(), ObjectUtils.asMap("resourcetype", "auto"));
-        menu.setDishPhotoLink(uploadResult.get("url").toString());
-        if(adminService.addMenu(menu))
-            return ResponseEntity.status(HttpStatus.OK).body("Menu added");
-
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Task failed");
-
-    }
     @PostMapping("/addon")
     public ResponseEntity<String> addon(@RequestBody Addon addon) throws Exception {
         if(adminService.addon(addon))
@@ -95,29 +128,16 @@ public class AdminController
 
     }
 
-    @PutMapping("/updateStatus")
-    public ResponseEntity<?>updateOrderStatus(@RequestBody Orders orders)
-    {
-        if(adminService.updateOrderStatus(orders))
-        {
-            return ResponseEntity.status(HttpStatus.OK).body(""+orders.getOrderStatus());
-        }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Task failed");
-    }
 
-    @PostMapping("/addOffers")
-    public ResponseEntity<?> addOffers(@ModelAttribute OfferRequestBody offer) throws IOException {
 
-        Map uploadResult2 = cloudinary.upload(offer.getPhoto().getBytes(), ObjectUtils.asMap("resourcetype", "auto"));
-        String photo_url=uploadResult2.get("url").toString();
-        offer.setPhoto_url(photo_url);
+    //prajwal
+    //assign role to a user
+    @PatchMapping("/Role/{userId}/{role}")
+    public ResponseEntity<?> assignRole(@PathVariable int userId,@PathVariable String role){
+        if(adminService.changeRole(userId, role))
+            return new ResponseEntity<>("Role Changed Successfully..",HttpStatus.OK);
 
-        boolean offer_obj= adminService.addOffers(offer);
-        if(offer_obj)
-        {
-            return new ResponseEntity<>("Offer added successfully", HttpStatus.OK);
-        }
-        return  new ResponseEntity<>("Cannot add offers",HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>("Some Error Occurred While Changing Role..",HttpStatus.EXPECTATION_FAILED);
     }
 
 }

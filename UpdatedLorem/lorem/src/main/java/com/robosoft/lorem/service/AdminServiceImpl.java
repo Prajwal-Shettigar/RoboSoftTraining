@@ -204,33 +204,7 @@ public class AdminServiceImpl implements AdminService
 
     //    updating order status by marchent
 
-    @Override
-    public boolean updateOrderStatus(Orders orders) {
-        try {
-            int orderStatusIndex = this.getOrderStatusIndex(orders.getOrderStatus());
-            query = "update orders set orderStatus=" + orderStatusIndex + " where orderId=" + orders.getOrderId() + " and userId=" + orders.getUserId()+" and orderStatus<"+orderStatusIndex;
-            if(jdbcTemplate.update(query)>0)
-                return true;
-            return false;
-        } catch (DataAccessException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
 
-    public int getOrderStatusIndex(String orderStatus){
-        switch (orderStatus.toUpperCase()){
-            case "ORDER_PLACED":{return 1;}
-            case "ORDER_ACCEPTED":{return 2;}
-            case "ORDER_IN_KITCHEN":{return 3;}
-            case "ORDER_OUT_FOR_DELIVERY":{return 4;}
-            case "ORDER_WAITING_FOR_DELIVERY":{return 5;}
-            case "ORDER_READY_FOR_PICKUP":{return 6;}
-            case "ORDER_DELIVERED":{return 7;}
-            case "ORDER_CANCELLED":{return 8;}
-            default:{return 9;}
-        }
-    }
 
     @Override
     public boolean addOffers(OfferRequestBody offer) throws IOException {

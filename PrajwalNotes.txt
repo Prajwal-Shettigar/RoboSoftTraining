@@ -1,0 +1,120 @@
+virtual machines 
+ its where u divide the resources of single machine and can have seperate machines (virutal ) with their own share of predefined ram and other processing capabilities
+
+containers
+here u basically run several applications on same machine but in isolation from each other with all required resources present or provided within the container they do not know about existance of other containers
+
+hyper visor
+there are 2 types type 1 and 2
+hypervisors divide and manage resaources of a machine among vm's it might be cpu,ram,network and even storage
+
+type 1
+ directly present on the host system
+type 2
+	installed as a software on top a os in the host
+
+pod
+ unit of deployment in kubernetes basically it contains one or more containers which need to run parallelly..
+
+so basically if u have multiple containers in a machine then each container must be allocated a different port to run and it will be difficult to keep track of the ports so what u can do is
+create a pod so pod can contain upto 6 containers and it has its own ip address so in a single host u could allocate the same port to different containers that is each pod will act as a host itself 
+as it has its own ip address and a connection to the internet
+
+
+modem
+modulator demodulator converts in between ad and dc and is uswed to connect to the internet
+
+
+router
+router basically allows multiple devices to connect to the modem
+
+hub
+transfers data to every device that is connected to it
+
+switch
+transfers data to intended device can read mac addressess
+
+hub and switch are used within a local network and not in the internet
+
+router
+can read ip addresses and can accept only those packets with ip address that it allows and redirect any other
+
+use hub and switches to connect devices where as router to connect networks
+
+load balancer
+distributes load or request among the multiple application servers that are running and also decides which servers to keep running and which to turn off
+
+
+pod consists of multiple containers and it consists of kube proxy and kublet kube proxy redirects requests to pods where as kublet communicates with master about the health of the pods
+
+
+
+kubernetes basic 10 min
+https://youtu.be/aSrqRSk43lY
+
+jenkins
+
+ci cd tools
+
+devops
+
+
+circuit breaker
+
+
+service registry
+	discovers microservices which are registered as clients
+
+load balancer
+
+gateway server
+	accepts all requests and redirects it onto a particular micro service
+
+with service registry u have an applicatin running which u are gonna declare as a service registry or a eureka  or some other service registry server it is a normal spring boot application but with a eureka server installed and nothing else it does contain a main class
+which has been annotated with @EnableEurekaServer
+
+and all other microservices have eureka client installed and also in application properties file u add in server server related properties
+
+for server
+server:
+  port: 8761
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+
+for clients
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    hostname: localhost
+
+
+
+hystrix for circuit breaker
+
+if u are using a config server which normally accesses configuration common to some of the services from github or other platform u install a extension for cloud config and also have boot strap file configured with url of the configuration server
+
+
+@NonNull
+to declare a field/methods is not nullable
+
+@Nullable
+to declare a field/methods is nullable
+
+@NonNullFields
+declared at the package level in package-info.java file to declare all fields in package are non null
+
+@NonNullApi 
+
+declared at the package level in package-info.java file to declare all methods in package are neither accept a null value nor return one
+
+package-info.java must be in root directory
+
+@Async
+method returns while this runs in a seperate task

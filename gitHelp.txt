@@ -73,3 +73,20 @@ git push origin --delete branchname
 git checkout -b branchname
 git push origin branchname
 
+
+
+//if clone no need of init
+
+u r in branch main and u have remote and local m  remote is the file at git remote and local is the file at local
+u have pulled remote and nbow have made changfes to the remote but local remains the same now u make changes to local now  u try to push local now u cant do it
+as remote contains content not present in local
+
+
+if u are in a brach and u have some extra content compared to that branch and u try to pull from main then u can either kee-p the content of u or main or u could merge
+in merge it provides u the option to merge content of 2 branches
+
+if u have 3 branches the main ,branch 1 and branch2 now if u make seperate changes to branch 1 and branch 2 the u could merge branch1 and main the u could merge main and branch2
+and it will give u prompt to keep which contents and the u can have both branches contebnts merged in main
+
+
+

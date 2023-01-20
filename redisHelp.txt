@@ -1,0 +1,35 @@
+install redis on windows
+
+install wsl first
+
+open powershell wsl --install 
+
+this will install wsl virtual box with ubuntu
+
+open ubuntu configure username and password then
+
+run
+
+curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
+
+echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
+
+sudo apt-get update
+sudo apt-get install redis
+
+
+start the redis server
+sudo service redis-server start
+
+
+get redis cli
+redis-cli
+
+exit to exit
+
+ping the server
+
+to start the server
+redis-server
+
+ctrl+c shuts down the server

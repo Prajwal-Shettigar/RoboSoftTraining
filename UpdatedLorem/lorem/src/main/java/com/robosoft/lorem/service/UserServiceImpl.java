@@ -1206,7 +1206,7 @@ public class UserServiceImpl implements UserService,UserDetailsService
     public List<MenuDetails> menuDetails(int restaurantId, String dishType, String dishName, int pageNo) {
         offset = this.getOffsets(pageNo);
 
-        query = "select dishName,price,customizable,description,dishPhoto,veg,menu.dishId from menu inner join dish on menu.dishId = dish.dishId where restaurantId=" + restaurantId + " and dishType like '%" + dishType + "%' and dishName like '%" + dishName + "%' limit " + offset + "," + limit;
+        query = "select dishName,price,customizable,description,dishPhoto,veg,menu.dishId from menu inner join dish on menu.dishId = dish.dishId where restaurantId=" + restaurantId + " and dishType like '%" + dishType + "%' and dishName like '%" + dishName + "%'";
         List<MenuDetails> menuDetails = new ArrayList<MenuDetails>();
         jdbcTemplate.query(query, (resultSet, no) ->
         {
@@ -1515,6 +1515,56 @@ public class UserServiceImpl implements UserService,UserDetailsService
         }
     }
 
+    public int selectRestaurantId(int orderId)
+    {
+        query="select restaurantId from orders where orderId="+orderId;
+        try {
+            return jdbcTemplate.queryForObject(query, Integer.class);
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    @Override
+    public Boolean updateOrderStatus(Orders orders) {
+        try {
+            System.out.println("checking ownership...");
+            if(!isOwner(selectRestaurantId(orders.getOrderId()),this.getUserIdFromEmail()))
+            {
+                System.out.println("not an owner..");
+                return false;
+            }
+            int orderStatusIndex = this.getOrderStatusIndex(orders.getOrderStatus());
+            query = "update orders set orderStatus=" + orderStatusIndex + " where orderId=" + orders.getOrderId() + " and orderStatus<"+orderStatusIndex;
+            if(jdbcTemplate.update(query)>0){
+                System.out.println("successfull order status change..");
+                return true;
+            }
+            System.out.println("updation failed..");
+            return false;
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public int getOrderStatusIndex(String orderStatus){
+        switch (orderStatus.toUpperCase()){
+            case "ORDER_PLACED":{return 1;}
+            case "ORDER_ACCEPTED":{return 2;}
+            case "ORDER_IN_KITCHEN":{return 3;}
+            case "ORDER_OUT_FOR_DELIVERY":{return 4;}
+            case "ORDER_WAITING_FOR_DELIVERY":{return 5;}
+            case "ORDER_READY_FOR_PICKUP":{return 6;}
+            case "ORDER_DELIVERED":{return 7;}
+            case "ORDER_CANCELLED":{return 8;}
+            default:{return 9;}
+        }
+    }
+
+
+
     //    Api when user click on choosePayment button
 
     @Override
@@ -1741,7 +1791,7 @@ public class UserServiceImpl implements UserService,UserDetailsService
     {
         int limit=24;
         Map map = new HashMap<Integer,List>();
-        offset=limit*(page-1);
+        offset=this.getOffset(page);
         List<Menu> photos=jdbcTemplate.query("select dishPhoto from menu where restaurantId=? limit ?,?",(rs, rowNum) -> {
             return new Menu(rs.getString("dishPhoto"));
         },restaurantId,offset,limit);
@@ -1761,7 +1811,7 @@ public class UserServiceImpl implements UserService,UserDetailsService
     public Map<Integer,List<Offer>> viewBestOffers(int page )
     {
         //offset = limit*(pg-1) --> 3*(1-1)
-        offset=limit*(page-1);
+        offset=this.getOffset(page);
         Map map = new HashMap<Integer,List>();
 
         List <Offer> users= jdbcTemplate.query(GET_OFFERS, new BeanPropertyRowMapper<>(Offer.class),offset,limit);
@@ -1778,7 +1828,7 @@ public class UserServiceImpl implements UserService,UserDetailsService
     public Map<Integer,List<Offer>> viewAllOffers(int page)
     {
         Map map = new HashMap<Integer,List>();
-        offset=limit*(page-1);
+        offset=this.getOffset(page);
         List <Offer> allOffers= jdbcTemplate.query(ALL_OFFERS,new BeanPropertyRowMapper<>(Offer.class),offset,limit);
 
         if(allOffers.size()!=0)
@@ -1794,7 +1844,7 @@ public class UserServiceImpl implements UserService,UserDetailsService
     public Map<Integer,List<Offer>> viewBrandOffers(int brandId, int page)
     {
         Map map = new HashMap<Integer,List>();
-        offset=limit*(page-1);
+        offset=this.getOffset(page);
         List<Offer> offerList=jdbcTemplate.query(GET_BRAND_OFFERS,new BeanPropertyRowMapper<>(Offer.class),brandId,offset,limit);
         if(offerList.size()!=0)
         {
@@ -1808,7 +1858,7 @@ public class UserServiceImpl implements UserService,UserDetailsService
     public Map<Integer,List<Offer>> viewBestOfferOfRestaurant(int page, int restaurantId)
     {
         //offset = limit*(pg-1) --> 3*(1-1)
-        offset=limit*(page-1);
+        offset=this.getOffset(page);
         Map map = new HashMap<Integer,List>();
 
         try
@@ -1845,7 +1895,7 @@ public class UserServiceImpl implements UserService,UserDetailsService
     public Map<Integer,List<Offer>> viewAllOffersOfRestaurant(int page, int restaurantId)
     {
         //offset = limit*(pg-1) --> 3*(1-1)
-        offset=limit*(page-1);
+        offset=this.getOffset(page);
         Map map = new HashMap<Integer,List>();
 
         try

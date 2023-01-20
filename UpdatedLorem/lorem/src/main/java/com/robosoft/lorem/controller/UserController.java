@@ -102,23 +102,7 @@ public class UserController
         }
     }
 
-    @GetMapping("/getReviews")
-    public ResponseEntity<?> getReviews(@RequestBody Restaurant restaurant)
-    {
-        try
-        {
-            Map<Integer,Object> reviewPageResponseList= userService.viewReviews(restaurant);
-            if(reviewPageResponseList.size()==0)
-            {
-                return new ResponseEntity<>("No Reviews to this restaurant",HttpStatus.FORBIDDEN);
-            }
-            return new ResponseEntity<>(reviewPageResponseList, HttpStatus.OK);
-        }
-        catch (Exception e)
-        {
-            return new ResponseEntity<>("No Reviews To this restaurant",HttpStatus.FORBIDDEN);
-        }
-    }
+
 
     @GetMapping("/getOrderDetails")
     public OrderDetails getOrderDetails(@RequestBody Orders orders)
@@ -350,98 +334,8 @@ public class UserController
         return new ResponseEntity<>(returningCartModel,HttpStatus.OK);
     }
 
-    //SEARCH RESTAURANT BY USING DISH TYPE
-    @GetMapping("/Searching/{restaurantId}/{dishType}/{pageNo}")
-    public ResponseEntity<List<MenuDetails>> search(@PathVariable int restaurantId, @PathVariable String dishType,@PathVariable int pageNo) {
-        List<MenuDetails> menuDetails = userService.menuDetails(restaurantId, dishType, "",pageNo);
-        if (menuDetails.size() <= 0) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        return ResponseEntity.of(Optional.of(menuDetails));
-    }
+    //nithin
 
-    //    DISPLAY MENU ITEMS
-    @GetMapping("/displayMenu/{restaurantId}/{pageNo}")
-    public ResponseEntity<List<MenuItem>> displayMenu(@PathVariable int restaurantId,@PathVariable int pageNo) {
-
-        List<MenuItem> menuItems = userService.DisplayMenu(restaurantId,pageNo);
-        if (menuItems.size() <= 0) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        return ResponseEntity.of(Optional.of(menuItems));
-    }
-
-    @GetMapping("/displayMenuItems/{restaurantId}/{pageNo}")
-    public ResponseEntity<MenuItems> displayMenuItems(@PathVariable int restaurantId,@PathVariable int pageNo) {
-
-        MenuItems menuItems = userService.DisplayMenuItems(restaurantId,pageNo);
-        if (menuItems == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        return ResponseEntity.of(Optional.of(menuItems));
-    }
-
-    //    SEARCH ITEM BY USING DISH NAME
-    @GetMapping("/searchItem/{restaurantId}/{dishName}/{pageNo}")
-    public ResponseEntity<List<MenuItem>> searchItem(@PathVariable int restaurantId, @PathVariable String dishName,@PathVariable int pageNo) {
-        List<MenuItem> menuItems = userService.searchItem(restaurantId, dishName,pageNo);
-        if (menuItems.size() <= 0) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        return ResponseEntity.of(Optional.of(menuItems));
-    }
-
-    //    VIEW RESTAURANT
-    @GetMapping("/viewRestaurant/{restaurantId}")
-    public ResponseEntity<RestaurantDetails> viewRestaurant(@PathVariable int restaurantId, @RequestBody Location start) {
-        RestaurantDetails restaurantDetails = userService.viewRestaurant(restaurantId, start);
-        if (restaurantDetails == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        return ResponseEntity.of(Optional.of(restaurantDetails));
-
-    }
-
-    //    OVERVIEW OF RESTAURANT
-    @GetMapping("/overView/{restaurantId}")
-    public ResponseEntity<OverviewDetails> overView(@PathVariable int restaurantId) {
-        OverviewDetails overviewDeatails = userService.overview(restaurantId);
-        if (overviewDeatails == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        return ResponseEntity.of(Optional.of(overviewDeatails));
-    }
-
-    //   ADDING OPENING INFORMATION
-    @PostMapping("/addOpeningInfo/{restaurantId}")
-    public ResponseEntity<String> addOpeningInfo(@ModelAttribute OpeningInfo openingInfo, @PathVariable int restaurantId) throws Exception {
-        if (userService.addOpeningInfo(openingInfo, restaurantId, userService.getUserIdFromEmail())) {
-            return ResponseEntity.status(HttpStatus.OK).body("successful");
-
-        }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Task failed");
-
-    }
-
-    //       OPENING INFORMATION FOR CURRENT DATE
-    @GetMapping("/opening/{restaurantId}")
-    public ResponseEntity<OpeningDetails> opening(@PathVariable int restaurantId) {
-        OpeningDetails openingDetails = userService.opening(restaurantId);
-        if (openingDetails == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        return ResponseEntity.of(Optional.of(openingDetails));
-    }
-
-    //    OPENING INFORMATION FOR NEXT 7 DAYS FROM CURRENT DATE
-    @GetMapping("/openingsFor7Days/{restaurantId}")
-    public ResponseEntity<List<OpeningDetails>> openingsFor7Days(@PathVariable int restaurantId) {
-        List<OpeningDetails> openingDetails = userService.openingsFor7Days(restaurantId);
-        if (openingDetails == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        return ResponseEntity.of(Optional.of(openingDetails));
-    }
 
     //adding new address
     @PostMapping("/addAddress")
@@ -523,24 +417,20 @@ public class UserController
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("failed to cancel order");
     }
 
-    @GetMapping("/viewBrand/{brandId}")
-    public ResponseEntity<BrandDesc> viewBrand(@PathVariable int brandId) throws IOException {
-        BrandDesc brand = userService.viewBrand(brandId);
-        if (brand == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    @PutMapping("/updateStatus")
+    public ResponseEntity<?>updateOrderStatus(@RequestBody Orders orders)
+    {
+        if(userService.updateOrderStatus(orders))
+        {
+            return ResponseEntity.status(HttpStatus.OK).body(""+orders.getOrderStatus());
         }
-        return ResponseEntity.of(Optional.of(brand));
-
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Task failed");
     }
 
 
 
+//Akrithi
 
-//    @GetMapping("/getpass")
-//    public User getPass()
-//    {
-//        return userServiceImpl.getPass();
-//    }
 
     @PutMapping("/editProfile")
     public ResponseEntity<String> editProfile(@ModelAttribute UserEditFields user) throws IOException {
@@ -586,87 +476,15 @@ public class UserController
         }
     }
 
-    @GetMapping("/view/gallery")
-    public ResponseEntity<?> displayGallery(@RequestParam("restaurantId") int restaurantId, @RequestParam("page") int page)
-    {
-        Map<Integer,List<Menu>> gallery = userService.Gallery(restaurantId,page);
-
-        if(gallery==null)
-        {
-            return new ResponseEntity<>("No photos here", HttpStatus.FORBIDDEN);
-        }
-        return new ResponseEntity<>(gallery, HttpStatus.OK);
-    }
 
 
-    @GetMapping("/viewBestOffers")
-    public ResponseEntity<?> viewBestOffers(@RequestParam int page)
-    {
-        Map<Integer,List<Offer>> offerList= userService.viewBestOffers(page);
-        if(offerList==null)
-        {
-            return  new ResponseEntity<>("No offers ahead",HttpStatus.FORBIDDEN);
-        }
-        return new ResponseEntity<>(offerList, HttpStatus.OK);
-    }
 
-    @GetMapping("/viewAllOffers")
-    public ResponseEntity<?> viewAllOffers(@RequestParam int page)
-    {
-
-        Map<Integer,List<Offer>> offerList= userService.viewAllOffers(page);
-        if(offerList==null)
-        {
-            return  new ResponseEntity<>("No offers ahead",HttpStatus.FORBIDDEN);
-        }
-        return new ResponseEntity<>(offerList, HttpStatus.OK);
-    }
 
     @GetMapping("/viewDetails")
     public ResponseEntity<?> viewDetails(@RequestParam String offerId)
     {
         ResponseEntity<?> offerObj= userService.viewOfferDetails(offerId);
         return offerObj;
-    }
-
-    @GetMapping("/viewBrandOffers")
-    public ResponseEntity<?> viewBrandOffers(@RequestParam int brandID, @RequestParam int page)
-    {
-        Map<Integer,List<Offer>> offerList= userService.viewBrandOffers(brandID,page);
-        if(offerList==null)
-        {
-            return  new ResponseEntity<>("No offers ahead for this brand",HttpStatus.FORBIDDEN);
-        }
-        return new ResponseEntity<>(offerList, HttpStatus.OK);
-    }
-
-
-
-    @GetMapping("/restaurant/best/offers")
-    public ResponseEntity<?> getRestaurantOffers(@RequestParam int page, @RequestParam int restaurantId)
-    {
-
-        Map<Integer,List<Offer>> offers= userService.viewBestOfferOfRestaurant(page,restaurantId);
-
-        if(offers==null)
-        {
-            return  new ResponseEntity<>("No offers ahead",HttpStatus.FORBIDDEN);
-        }
-        return new ResponseEntity<>(offers,HttpStatus.OK);
-    }
-
-
-    @GetMapping("/restaurant/all/offers")
-    public ResponseEntity<?> getRestaurantAllOffers(@RequestParam int page, @RequestParam int restaurantId)
-    {
-
-        Map<Integer,List<Offer>> offers= userService.viewAllOffersOfRestaurant(page,restaurantId);
-
-        if(offers==null)
-        {
-            return  new ResponseEntity<>("No offers ahead",HttpStatus.FORBIDDEN);
-        }
-        return new ResponseEntity<>(offers,HttpStatus.OK);
     }
 
 
